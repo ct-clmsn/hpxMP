@@ -38,7 +38,7 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
-extern boost::shared_ptr<hpx_runtime> hpx_backend;
+extern std::shared_ptr<hpx_runtime> hpx_backend;
 /*!
 @defgroup ATOMIC_OPS Atomic Operations
 These functions are used for implementing the many different varieties of atomic operations.
@@ -703,11 +703,11 @@ RET_TYPE __kmpc_atomic_##TYPE_ID##_##OP_ID( ident_t *id_ref, int gtid, TYPE * lh
 // I verified the asm of the workaround.
 #define OP_CMPXCHG_WORKAROUND(TYPE,BITS,OP)                               \
     {                                                                     \
-	kmp_int8 anonym[ ( sizeof( TYPE ) == sizeof( kmp_int##BITS ) ) ? ( 1 ) : ( 0 ) ] = { 1 }; \
-	struct _sss {                                                     \
-	    TYPE            cmp;                                          \
-	    kmp_int##BITS   *vvv;                                         \
-	};                                                                \
+    kmp_int8 anonym[ ( sizeof( TYPE ) == sizeof( kmp_int##BITS ) ) ? ( 1 ) : ( 0 ) ] = { 1 }; \
+    struct _sss {                                                     \
+        TYPE            cmp;                                          \
+        kmp_int##BITS   *vvv;                                         \
+    };                                                                \
         struct _sss old_value, new_value;                                 \
         old_value.vvv = ( kmp_int##BITS * )&old_value.cmp;                \
         new_value.vvv = ( kmp_int##BITS * )&new_value.cmp;                \
@@ -719,8 +719,8 @@ RET_TYPE __kmpc_atomic_##TYPE_ID##_##OP_ID( ident_t *id_ref, int gtid, TYPE * lh
         {                                                                 \
             KMP_DO_PAUSE;                                                 \
                                                                           \
-	    *old_value.vvv = * ( volatile kmp_int##BITS * ) lhs;          \
-	    new_value.cmp = old_value.cmp OP rhs;                         \
+        *old_value.vvv = * ( volatile kmp_int##BITS * ) lhs;          \
+        new_value.cmp = old_value.cmp OP rhs;                         \
         }                                                                 \
     }
 // end of the first part of the workaround for C78287
@@ -2313,85 +2313,85 @@ ATOMIC_CRITICAL_SWP( cmplx16, CPLX128_LEG, 32c,   1 )              // __kmpc_ato
 void
 __kmpc_atomic_1( ident_t *id_ref, int gtid, void* lhs, void* rhs, void (*f)( void *, void *, void * ) )
 {
-	kmp_int8 old_value, new_value;
+    kmp_int8 old_value, new_value;
 
-	old_value = *(kmp_int8 *) lhs;
-	(*f)( &new_value, &old_value, rhs );
+    old_value = *(kmp_int8 *) lhs;
+    (*f)( &new_value, &old_value, rhs );
 
-	/* TODO: Should this be acquire or release? */
-	while ( !  KMP_COMPARE_AND_STORE_ACQ8 ( (kmp_int8 *) lhs,
-		    		*(kmp_int8 *) &old_value, *(kmp_int8 *) &new_value ) )
-	{
-	    KMP_CPU_PAUSE();
+    /* TODO: Should this be acquire or release? */
+    while ( !  KMP_COMPARE_AND_STORE_ACQ8 ( (kmp_int8 *) lhs,
+                    *(kmp_int8 *) &old_value, *(kmp_int8 *) &new_value ) )
+    {
+        KMP_CPU_PAUSE();
 
-	    old_value = *(kmp_int8 *) lhs;
-	    (*f)( &new_value, &old_value, rhs );
-	}
+        old_value = *(kmp_int8 *) lhs;
+        (*f)( &new_value, &old_value, rhs );
+    }
 
-	return;
+    return;
 }
 
 void
 __kmpc_atomic_2( ident_t *id_ref, int gtid, void* lhs, void* rhs, void (*f)( void *, void *, void * ) )
 {
-	kmp_int16 old_value, new_value;
+    kmp_int16 old_value, new_value;
 
-	old_value = *(kmp_int16 *) lhs;
-	(*f)( &new_value, &old_value, rhs );
+    old_value = *(kmp_int16 *) lhs;
+    (*f)( &new_value, &old_value, rhs );
 
-	/* TODO: Should this be acquire or release? */
-	while ( !  KMP_COMPARE_AND_STORE_ACQ16 ( (kmp_int16 *) lhs,
-		    		*(kmp_int16 *) &old_value, *(kmp_int16 *) &new_value ) )
-	{
-	    KMP_CPU_PAUSE();
+    /* TODO: Should this be acquire or release? */
+    while ( !  KMP_COMPARE_AND_STORE_ACQ16 ( (kmp_int16 *) lhs,
+                    *(kmp_int16 *) &old_value, *(kmp_int16 *) &new_value ) )
+    {
+        KMP_CPU_PAUSE();
 
-	    old_value = *(kmp_int16 *) lhs;
-	    (*f)( &new_value, &old_value, rhs );
-	}
+        old_value = *(kmp_int16 *) lhs;
+        (*f)( &new_value, &old_value, rhs );
+    }
 
-	return;
+    return;
 }
 
 void
 __kmpc_atomic_4( ident_t *id_ref, int gtid, void* lhs, void* rhs, void (*f)( void *, void *, void * ) )
 {
-	kmp_int32 old_value, new_value;
+    kmp_int32 old_value, new_value;
 
-	old_value = *(kmp_int32 *) lhs;
-	(*f)( &new_value, &old_value, rhs );
+    old_value = *(kmp_int32 *) lhs;
+    (*f)( &new_value, &old_value, rhs );
 
-	/* TODO: Should this be acquire or release? */
-	while ( !  KMP_COMPARE_AND_STORE_ACQ32 ( (kmp_int32 *) lhs,
-		    		*(kmp_int32 *) &old_value, *(kmp_int32 *) &new_value ) )
-	{
-	    KMP_CPU_PAUSE();
+    /* TODO: Should this be acquire or release? */
+    while ( !  KMP_COMPARE_AND_STORE_ACQ32 ( (kmp_int32 *) lhs,
+                    *(kmp_int32 *) &old_value, *(kmp_int32 *) &new_value ) )
+    {
+        KMP_CPU_PAUSE();
 
-	    old_value = *(kmp_int32 *) lhs;
-	    (*f)( &new_value, &old_value, rhs );
-	}
+        old_value = *(kmp_int32 *) lhs;
+        (*f)( &new_value, &old_value, rhs );
+    }
 
-	return;
+    return;
 }
 
 void
 __kmpc_atomic_8( ident_t *id_ref, int gtid, void* lhs, void* rhs, void (*f)( void *, void *, void * ) )
 {
-	kmp_int64 old_value, new_value;
+    kmp_int64 old_value, new_value;
 
-	old_value = *(kmp_int64 *) lhs;
-	(*f)( &new_value, &old_value, rhs );
-	/* TODO: Should this be acquire or release? */
-	while ( !  KMP_COMPARE_AND_STORE_ACQ64 ( (kmp_int64 *) lhs,
-					       *(kmp_int64 *) &old_value,
-					       *(kmp_int64 *) &new_value ) )
-	{
-	    KMP_CPU_PAUSE();
+    old_value = *(kmp_int64 *) lhs;
+    (*f)( &new_value, &old_value, rhs );
+    /* TODO: Should this be acquire or release? */
+    while ( !  KMP_COMPARE_AND_STORE_ACQ64 ( (kmp_int64 *) lhs,
+                           *(kmp_int64 *) &old_value,
+                           *(kmp_int64 *) &new_value ) )
+    {
+        KMP_CPU_PAUSE();
 
-	    old_value = *(kmp_int64 *) lhs;
-	    (*f)( &new_value, &old_value, rhs );
-	}
+        old_value = *(kmp_int64 *) lhs;
+        (*f)( &new_value, &old_value, rhs );
+    }
 
-	return;
+    return;
 }
 
 void

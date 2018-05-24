@@ -33,9 +33,6 @@
 
 #include "icv-vars.h"
 
-
-using std::atomic;
-using boost::shared_ptr;
 using hpx::threads::executors::local_priority_queue_executor;
 using hpx::lcos::local::barrier;
 using hpx::lcos::shared_future;
@@ -55,7 +52,7 @@ typedef void (*omp_task_func)(void *firstprivates, void *fp);
 
 typedef hpx::lcos::local::spinlock mutex_type;
 //typedef hpx::lcos::local::mutex  mutex_type;
-typedef boost::shared_ptr<mutex_type> mtx_ptr;
+typedef std::shared_ptr<mutex_type> mtx_ptr;
 
 typedef int (* kmp_routine_entry_t)( int, void * );
 
@@ -82,9 +79,9 @@ typedef struct kmp_depend_info {
 
 class loop_data {
     public:
-        loop_data(int NT, int L, int U, int S, int C, int sched) 
-            : lower(L), upper(U), stride(S), chunk(C), num_threads(NT), 
-              first_iter(NT,0), last_iter(NT,0), iter_count(NT,0), 
+        loop_data(int NT, int L, int U, int S, int C, int sched)
+            : lower(L), upper(U), stride(S), chunk(C), num_threads(NT),
+              first_iter(NT,0), last_iter(NT,0), iter_count(NT,0),
               schedule(sched)
     {
         if( stride == 0) {
@@ -95,9 +92,9 @@ class loop_data {
             total_iter = (lower - upper) / -stride + 1;
         }
     }
-        loop_data(const loop_data &other) 
-            : loop_data( other.num_threads, other.lower, other.upper, 
-                         other.stride, other.chunk, other.schedule ) 
+        loop_data(const loop_data &other)
+            : loop_data( other.num_threads, other.lower, other.upper,
+                         other.stride, other.chunk, other.schedule )
         { }
 
         loop_data operator=(const loop_data &other) {
@@ -109,8 +106,8 @@ class loop_data {
         int upper;
         int stride;
         int chunk;
-        atomic<int> ordered_count{0};
-        atomic<int> schedule_count{0};
+        std::atomic<int> ordered_count{0};
+        std::atomic<int> schedule_count{0};
         int num_threads;
         int schedule;
         int total_iter;
@@ -124,30 +121,30 @@ class loop_data {
 //template<typename scheduler>
 struct parallel_region {
 
-    parallel_region( int N ) : num_threads(N), globalBarrier(N), 
+    parallel_region( int N ) : num_threads(N), globalBarrier(N),
                                depth(0), reduce_data(N)
     {};
 
     parallel_region( parallel_region *parent, int threads_requested ) : parallel_region(threads_requested)
     {
-        depth = parent->depth + 1; 
+        depth = parent->depth + 1;
     }
     int num_threads;
     //hpx::lcos::local::condition_variable_any cond;
     barrier globalBarrier;
     mutex_type crit_mtx{};
     mutex_type thread_mtx{};
-    mutex_type single_mtx{}; 
+    mutex_type single_mtx{};
     int depth;
-    atomic<int64_t> num_tasks{0};
-    atomic<int> single_counter{0};
-    atomic<int> current_single_thread{-1};
+    std::atomic<int64_t> num_tasks{0};
+    std::atomic<int> single_counter{0};
+    std::atomic<int> current_single_thread{-1};
     void *copyprivate_data;
     vector<void*> reduce_data;
     vector<loop_data> loop_list;
     mutex_type loop_mtx;
 #ifdef OMP_COMPLIANT
-    shared_ptr<local_priority_queue_executor> exec;
+    std::shared_ptr<local_priority_queue_executor> exec;
 #endif
 };
 
@@ -158,8 +155,8 @@ struct parallel_region {
 class omp_task_data {
     public:
         //This constructor should only be used once for the implicit task
-        omp_task_data( parallel_region *T, omp_device_icv *global, int init_num_threads) 
-            : team(T), num_child_tasks(new atomic<int64_t>{0})
+        omp_task_data( parallel_region *T, omp_device_icv *global, int init_num_threads)
+            : team(T), num_child_tasks(new std::atomic<int64_t>{0})
               {
             local_thread_num = 0;
             icv.device = global;
@@ -179,7 +176,7 @@ class omp_task_data {
 
         //This is for explicit tasks
         omp_task_data(int tid, parallel_region *T, omp_icv icv_vars)
-            : local_thread_num(tid), team(T), icv(icv_vars), num_child_tasks(new atomic<int64_t>{0})
+            : local_thread_num(tid), team(T), icv(icv_vars), num_child_tasks(new std::atomic<int64_t>{0})
         {
             threads_requested = icv.nthreads;
             icv_vars.device = icv.device;
@@ -199,23 +196,23 @@ class omp_task_data {
                 threads_requested = 1;
             }
         }
-        
+
         int local_thread_num;
         //int global_thread_num;
         int threads_requested;
         parallel_region *team;
         //mutex_type thread_mutex;
         //hpx::lcos::local::condition_variable_any thread_cond;
-        shared_ptr<atomic<int64_t>> num_child_tasks;
+        std::shared_ptr<std::atomic<int64_t>> num_child_tasks;
         int single_counter{0};
         int loop_num{0};
         bool in_taskgroup{false};
         //shared_future<void> last_df_task;
 
 #ifdef OMP_COMPLIANT
-        shared_ptr<local_priority_queue_executor> tg_exec;
+        std::shared_ptr<local_priority_queue_executor> tg_exec;
 #else
-        shared_ptr<atomic<int64_t>> tg_num_tasks;
+        std::shared_ptr<std::atomic<int64_t>> tg_num_tasks;
 #endif
 
         omp_icv icv;
@@ -230,6 +227,8 @@ struct raw_data {
 class hpx_runtime {
     public:
         hpx_runtime();
+        ~hpx_runtime();
+
         void fork(invoke_func kmp_invoke, microtask_t thread_func, int argc, void** argv);
         parallel_region* get_team();
         omp_task_data* get_task_data();
@@ -241,12 +240,12 @@ class hpx_runtime {
         void create_task( omp_task_func taskfunc, void *frame_pointer,
                           void *firstprivates, int is_tied, int blocks_parent);
         void create_task( kmp_routine_entry_t taskfunc, int gtid, kmp_task_t *task);
-        void create_df_task( int gtid, kmp_task_t *thunk, 
+        void create_df_task( int gtid, kmp_task_t *thunk,
                              int ndeps, kmp_depend_info_t *dep_list,
                              int ndeps_noalias, kmp_depend_info_t *noalias_dep_list );
 
 #ifdef FUTURIZE_TASKS
-        void create_future_task( int gtid, kmp_task_t *thunk, 
+        void create_future_task( int gtid, kmp_task_t *thunk,
                                  int ndeps, kmp_depend_info_t *dep_list);
 #endif
         void task_exit();
@@ -260,13 +259,13 @@ class hpx_runtime {
         void end_taskgroup();
 
     private:
-        shared_ptr<parallel_region> implicit_region;
-        shared_ptr<omp_task_data> initial_thread;
+        std::shared_ptr<parallel_region> implicit_region;
+        std::shared_ptr<omp_task_data> initial_thread;
         int num_procs;
-        shared_ptr<high_resolution_timer> walltime;
+        std::shared_ptr<high_resolution_timer> walltime;
         bool external_hpx;
         omp_device_icv device_icv;
 
-        //atomic<int> threads_running{0};//ThreadsBusy
+        //std::atomic<int> threads_running{0};//ThreadsBusy
 };
 

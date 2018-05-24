@@ -191,7 +191,7 @@ extern "C" {
     //typedef kmp_queuing_lock_t kmp_atomic_lock_t;
     typedef hpx::lcos::local::spinlock kmp_atomic_lock_t;
 
-    //typedef boost::shared_ptr<mutex_type> mtx_ptr;
+    //typedef std::shared_ptr<mutex_type> mtx_ptr;
     
     static inline void
         __kmp_acquire_atomic_lock( kmp_atomic_lock_t *lck, kmp_int32 gtid )

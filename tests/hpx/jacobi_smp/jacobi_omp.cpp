@@ -8,6 +8,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <chrono>
+#include <memory>
 
 using boost::program_options::variables_map;
 using boost::program_options::options_description;
@@ -15,7 +16,6 @@ using boost::program_options::value;
 using boost::program_options::store;
 using boost::program_options::parse_command_line;
 
-using boost::shared_ptr;
 using std::min;
 using std::vector;
 
@@ -30,8 +30,8 @@ void jacobi_kernel_wrap(size_t y_begin, size_t y_end, size_t n, vector<double> &
 }
 
 void jacobi( size_t n , size_t iterations, size_t block_size, std::string output_filename) {
-    shared_ptr< vector<double> > grid_new(new vector<double>(n * n, 1));
-    shared_ptr< vector<double> > grid_old(new vector<double>(n * n, 1));
+    std::shared_ptr< vector<double> > grid_new(new vector<double>(n * n, 1));
+    std::shared_ptr< vector<double> > grid_old(new vector<double>(n * n, 1));
 
     size_t n_block = static_cast<size_t>(std::ceil(double(n)/block_size));
 

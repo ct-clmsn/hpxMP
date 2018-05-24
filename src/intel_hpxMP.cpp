@@ -1,12 +1,13 @@
 #include "intel_hpxMP.h"
-#include <boost/shared_ptr.hpp>
+
 #include <iostream>
+#include <memory>
 #include <assert.h>
 
 using std::cout;
 using std::endl;
 
-boost::shared_ptr<hpx_runtime> hpx_backend;
+std::shared_ptr<hpx_runtime> hpx_backend;
 
 
 //This is called where the library calls can potentially be executed

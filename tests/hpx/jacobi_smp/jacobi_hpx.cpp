@@ -13,7 +13,6 @@
 #include <hpx/util/high_resolution_timer.hpp>
 #include <hpx/util/unwrapped.hpp>
 
-using boost::shared_ptr;
 using std::min;
 using std::vector;
 using hpx::make_ready_future;

@@ -1,8 +1,9 @@
 #include <iostream>
+#include <memory>
 #include "loop_schedule.h"
 #include <thread>
 
-extern boost::shared_ptr<hpx_runtime> hpx_backend;
+extern std::shared_ptr<hpx_runtime> hpx_backend;
 
 using std::cout;
 using std::endl;
@@ -34,7 +35,7 @@ void omp_static_init( int gtid, int schedtype, int *p_last_iter,
 
         my_lower = *p_lower + gtid * incr * chunk;
         my_upper = my_lower + incr * chunk - 1;
-        
+
         if(trip_count - trip_count%(-chunk*incr) == gtid*incr*chunk + trip_count - trip_count%(chunk*incr*team_size) ) {
             *p_last_iter = 1;
         } else {
@@ -48,9 +49,9 @@ void omp_static_init( int gtid, int schedtype, int *p_last_iter,
 }
 
 void
-__kmpc_for_static_init_4( ident_t *loc, int32_t gtid, int32_t schedtype, 
-                          int32_t *p_last_iter,int32_t *p_lower, int32_t *p_upper, 
-                          int32_t *p_stride, int32_t incr, int32_t chunk ) 
+__kmpc_for_static_init_4( ident_t *loc, int32_t gtid, int32_t schedtype,
+                          int32_t *p_last_iter,int32_t *p_lower, int32_t *p_upper,
+                          int32_t *p_stride, int32_t incr, int32_t chunk )
 {
     omp_static_init<int>( gtid, schedtype, p_last_iter, p_lower, p_upper,
                           p_stride, incr, chunk );
@@ -66,18 +67,18 @@ __kmpc_for_static_init_4u( ident_t *loc, int32_t gtid, int32_t schedtype,
 }
 
 void
-__kmpc_for_static_init_8( ident_t *loc, int32_t gtid, 
-                          int32_t schedtype, int32_t *p_last_iter, 
-                          int64_t *p_lower, int64_t *p_upper, 
-                          int64_t *p_stride, int64_t incr, int64_t chunk ) 
+__kmpc_for_static_init_8( ident_t *loc, int32_t gtid,
+                          int32_t schedtype, int32_t *p_last_iter,
+                          int64_t *p_lower, int64_t *p_upper,
+                          int64_t *p_stride, int64_t incr, int64_t chunk )
 {
     omp_static_init<int64_t>( gtid, schedtype, p_last_iter,
                                p_lower, p_upper, p_stride, incr, chunk );
 }
 
-void 
-__kmpc_for_static_init_8u( ident_t *loc, int32_t gtid, 
-                           int32_t schedtype, int32_t *p_last_iter, 
+void
+__kmpc_for_static_init_8u( ident_t *loc, int32_t gtid,
+                           int32_t schedtype, int32_t *p_last_iter,
                            uint64_t *p_lower, uint64_t *p_upper,
                            int64_t *p_stride, int64_t incr, int64_t chunk )
 {
@@ -124,7 +125,7 @@ void scheduler_init( int gtid, int schedtype, T lower, T upper, D stride, D chun
 }
 
 
-void 
+void
 __kmpc_dispatch_init_4( ident_t *loc, int32_t gtid, enum sched_type schedule,
                         int32_t lb, int32_t ub, int32_t st, int32_t chunk ) {
     scheduler_init<int32_t>( gtid, schedule, lb, ub, st, chunk );
@@ -132,21 +133,21 @@ __kmpc_dispatch_init_4( ident_t *loc, int32_t gtid, enum sched_type schedule,
 
 void
 __kmpc_dispatch_init_4u( ident_t *loc, int32_t gtid, enum sched_type schedule,
-                         uint32_t lb, uint32_t ub, 
+                         uint32_t lb, uint32_t ub,
                          int32_t st, int32_t chunk ) {
     scheduler_init<uint32_t, int32_t>( gtid, schedule, lb, ub, st, chunk );
 }
 
 void
 __kmpc_dispatch_init_8( ident_t *loc, int32_t gtid, enum sched_type schedule,
-                        int64_t lb, int64_t ub, 
+                        int64_t lb, int64_t ub,
                         int64_t st, int64_t chunk ) {
     scheduler_init<int64_t>( gtid, schedule, lb, ub, st, chunk );
 }
 
 void
 __kmpc_dispatch_init_8u( ident_t *loc, int32_t gtid, enum sched_type schedule,
-                         uint64_t lb, uint64_t ub, 
+                         uint64_t lb, uint64_t ub,
                          int64_t st, int64_t chunk ) {
     scheduler_init<uint64_t, int64_t>( gtid, schedule, lb, ub, st, chunk );
 }
@@ -178,7 +179,7 @@ int kmp_next( int gtid, int *p_last, T *p_lower, T *p_upper, D *p_stride ) {
             *p_stride = loop_sched->stride;
 
             omp_static_init<T,D>( gtid, kmp_sch_static, p_last,
-                                  p_lower, p_upper, p_stride, 
+                                  p_lower, p_upper, p_stride,
                                   loop_sched->stride, loop_sched->chunk);
 
             //if(loop_sched->ordered) {

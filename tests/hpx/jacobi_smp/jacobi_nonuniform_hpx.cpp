@@ -10,6 +10,8 @@
 #include <hpx/include/lcos.hpp>
 #include <hpx/util/high_resolution_timer.hpp>
 
+#include <memory.h>
+
 namespace jacobi_smp {
 
     void jacobi_kernel_wrap(
@@ -32,8 +34,8 @@ namespace jacobi_smp {
     {
         typedef std::vector<double> vector_type;
 
-        boost::shared_ptr<vector_type> dst(new vector_type(b));
-        boost::shared_ptr<vector_type> src(new vector_type(b));
+        std::shared_ptr<vector_type> dst(new vector_type(b));
+        std::shared_ptr<vector_type> src(new vector_type(b));
 
         std::vector<range> block_ranges;
         // pre-computing ranges for the different blocks
@@ -71,8 +73,8 @@ namespace jacobi_smp {
         }
 
         typedef std::vector<hpx::shared_future<void> > future_vector;
-        boost::shared_ptr<future_vector> deps_dst(new future_vector(dependencies.size(), hpx::make_ready_future()));
-        boost::shared_ptr<future_vector> deps_src(new future_vector(dependencies.size(), hpx::make_ready_future()));
+        std::shared_ptr<future_vector> deps_dst(new future_vector(dependencies.size(), hpx::make_ready_future()));
+        std::shared_ptr<future_vector> deps_src(new future_vector(dependencies.size(), hpx::make_ready_future()));
 
         hpx::util::high_resolution_timer t;
         for(std::size_t iter = 0; iter < iterations; ++iter)

@@ -7,8 +7,6 @@
 #include <hpx/include/lcos.hpp>
 #include <hpx/include/thread_executors.hpp>
 
-#include <boost/shared_ptr.hpp>
-
 #include <boost/lexical_cast.hpp>
 
 
@@ -21,10 +19,10 @@ using hpx::threads::executors::local_priority_queue_executor;
 
 class mock_runtime {
     public:
-        boost::shared_ptr<local_priority_queue_executor> exec;
+        std::shared_ptr<local_priority_queue_executor> exec;
 };
 
-boost::shared_ptr<mock_runtime> test_runtime;
+std::shared_ptr<mock_runtime> test_runtime;
 /*
 void print_ints(int i, int j) {
     cout << "* i = " << i << ", j = " << j << endl;
