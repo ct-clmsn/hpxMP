@@ -35,6 +35,14 @@ void wait_for_startup(std::mutex& startup_mtx, std::condition_variable& cond, bo
     }
 }
 
+void fini_runtime()
+{
+    cout << "Stopping HPX OpenMP runtime" << endl;
+    //this should only be done if this runtime started hpx
+    hpx::get_runtime().stop();
+    cout << "Stopped" << endl;
+}
+
 void start_hpx(int initial_num_threads)
 {
 #ifdef OMP_COMPLIANT
@@ -94,6 +102,9 @@ void start_hpx(int initial_num_threads)
         if (!running)
             cond.wait(lk);
     }
+    atexit(fini_runtime);
+
+//    delete[] argv;
 }
 
 hpx_runtime::hpx_runtime()
@@ -122,16 +133,6 @@ hpx_runtime::hpx_runtime()
 
     if(!external_hpx) {
         start_hpx(initial_num_threads);
-    }
-}
-
-hpx_runtime()::~hpx_runtime()
-{
-    if(!external_hpx) {
-        cout << "Stopping HPX OpenMP runtime" << endl;
-        //this should only be done if this runtime started hpx
-        hpx::get_runtime().stop();
-        cout << "Stopped" << endl;
     }
 }
 

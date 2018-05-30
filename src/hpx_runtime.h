@@ -227,7 +227,6 @@ struct raw_data {
 class hpx_runtime {
     public:
         hpx_runtime();
-        ~hpx_runtime();
 
         void fork(invoke_func kmp_invoke, microtask_t thread_func, int argc, void** argv);
         parallel_region* get_team();
@@ -265,7 +264,6 @@ class hpx_runtime {
         std::shared_ptr<high_resolution_timer> walltime;
         bool external_hpx;
         omp_device_icv device_icv;
-
         //std::atomic<int> threads_running{0};//ThreadsBusy
 };
 
