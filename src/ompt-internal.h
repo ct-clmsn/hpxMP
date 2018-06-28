@@ -16,6 +16,14 @@
 
 #include "ompt-event-specific.h"
 #include "ompt.h"
+#include "hpx_runtime.h"
+
+/*****************************************************************************
+ * types
+ ***************************************************************************/
+typedef omp_task_data ompt_thread_t;
+extern std::shared_ptr<hpx_runtime> hpx_backend;
+ompt_data_t *__ompt_get_thread_data_internal();
 
 #define OMPT_VERSION 1
 

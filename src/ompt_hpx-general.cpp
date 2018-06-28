@@ -179,21 +179,24 @@ void ompt_post_init() {
             return;
         }
 
-//        ompt_thread_t *root_thread = ompt_get_thread();
-//
-//        ompt_set_thread_state(root_thread, omp_state_overhead);
-//
-//        if (ompt_enabled.ompt_callback_thread_begin) {
-//            ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
-//                    ompt_thread_initial, __ompt_get_thread_data_internal());
-//        }
+        //ompt_thread_t *root_thread = ompt_get_thread();
+        ompt_thread_t *root_thread = hpx_backend->get_task_data();
+
+        //ompt_set_thread_state(root_thread, omp_state_overhead);
+        //TODO:confused get_self_id()
+        //hpx::threads::set_thread_state(hpx::threads::get_self_id());
+
+        if (ompt_enabled.ompt_callback_thread_begin) {
+            ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
+                    ompt_thread_initial, __ompt_get_thread_data_internal());
+        }
 //        ompt_data_t *task_data;
 //        __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
 //        if (ompt_enabled.ompt_callback_task_create) {
 //            ompt_callbacks.ompt_callback(ompt_callback_task_create)(
 //                    NULL, NULL, task_data, ompt_task_initial, 0, NULL);
 //        }
-//
+
 //        ompt_set_thread_state(root_thread, omp_state_work_serial);
     }
 }
@@ -241,4 +244,22 @@ static ompt_interface_fn_t ompt_fn_lookup(const char *s) {
     FOREACH_OMPT_INQUIRY_FN(ompt_interface_fn)
 
     return (ompt_interface_fn_t)0;
+}
+
+
+/*****************************************************************************
+ * From ompt-specific.cpp
+ ****************************************************************************/
+ompt_data_t *__ompt_get_thread_data_internal() {
+    thread_local ompt_data_t data;
+    //std::cout<<hpx::threads::get_self_id()<<std::endl;
+    //data = reinterpret_cast<ompt_data_t*>(hpx::threads::get_thread_data(hpx::threads::get_self_id()));
+    return &data;
+//    if (__kmp_get_gtid() >= 0) {
+//        kmp_info_t *thread = ompt_get_thread();
+//        if (thread == NULL)
+//            return NULL;
+//        return &(thread->th.ompt_thread_info.thread_data);
+//    }
+//    return NULL;
 }
