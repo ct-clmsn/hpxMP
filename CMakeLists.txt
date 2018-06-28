@@ -29,7 +29,7 @@ link_directories(${HPX_LIBRARY_DIR})
 
 set(HPX_RPATH  "${HPX_RPATH}:${CMAKE_INSTALL_PREFIX}/lib/hpx:${CMAKE_BINARY_DIR}/lib/hpx")
 
-add_hpx_library(hpxmp SOURCES src/asm_functions.s src/intel_hpxMP.cpp src/hpx_runtime.cpp src/kmp_atomic.cpp src/loop_schedule.cpp HEADERS src/intel_hpxMP.h src/hpx_runtime.h src/kmp_atomic.h src/loop_schedule.h)
+add_hpx_library(hpxmp SOURCES src/asm_functions.s src/intel_hpxMP.cpp src/hpx_runtime.cpp src/kmp_atomic.cpp src/loop_schedule.cpp src/ompt_hpx-general.cpp HEADERS src/intel_hpxMP.h src/hpx_runtime.h src/kmp_atomic.h src/loop_schedule.h src/ompt.h src/ompt-event-specific.h src/ompt-internal.h)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -fopenmp")
 include_directories(/home/tianyi/fix_hpx/repos/openmp/runtime/test/ompt)
