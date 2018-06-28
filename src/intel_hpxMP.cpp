@@ -189,6 +189,11 @@ int __kmpc_global_thread_num(ident_t *loc){
     ompt_pre_init();
 #endif
     start_backend();
+    
+#if OMPT_SUPPORT
+    ompt_post_init();
+#endif
+    
     if(hpx_backend)
         return hpx_backend->get_thread_num();
     return 0;

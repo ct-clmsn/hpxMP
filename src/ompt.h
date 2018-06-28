@@ -28,27 +28,28 @@
  *****************************************************************************/
 
 #define FOREACH_OMPT_INQUIRY_FN(macro)      \
-    macro (ompt_enumerate_states)           \
-    macro (ompt_enumerate_mutex_impls)      \
-                                            \
-    macro (ompt_set_callback)               \
-    macro (ompt_get_callback)               \
-                                            \
-    macro (ompt_get_state)                  \
-                                            \
-    macro (ompt_get_parallel_info)          \
-    macro (ompt_get_task_info)              \
-    macro (ompt_get_thread_data)            \
-    macro (ompt_get_unique_id)              \
-                                            \
-    macro(ompt_get_num_procs)               \
-    macro(ompt_get_num_places)              \
-    macro(ompt_get_place_proc_ids)          \
-    macro(ompt_get_place_num)               \
-    macro(ompt_get_partition_place_nums)    \
-    macro(ompt_get_proc_id)                 \
-                                            \
-    macro(ompt_get_target_info)             \
+    macro(ompt_set_callback)
+//    macro (ompt_enumerate_states)           \
+//    macro (ompt_enumerate_mutex_impls)      \
+//                                            \
+//    macro (ompt_set_callback)               \
+//    macro (ompt_get_callback)               \
+//                                            \
+//    macro (ompt_get_state)                  \
+//                                            \
+//    macro (ompt_get_parallel_info)          \
+//    macro (ompt_get_task_info)              \
+//    macro (ompt_get_thread_data)            \
+//    macro (ompt_get_unique_id)              \
+//                                            \
+//    macro(ompt_get_num_procs)               \
+//    macro(ompt_get_num_places)              \
+//    macro(ompt_get_place_proc_ids)          \
+//    macro(ompt_get_place_num)               \
+//    macro(ompt_get_partition_place_nums)    \
+//    macro(ompt_get_proc_id)                 \
+//                                            \
+//    macro(ompt_get_target_info)             \
     macro(ompt_get_num_devices)
 
 #define FOREACH_OMP_STATE(macro)                                                                \
@@ -103,55 +104,55 @@
                                                                                                                          \
     /*--- Mandatory Events ---*/                                                                                         \
     macro (ompt_callback_thread_begin,      ompt_callback_thread_begin_t,       1) /* thread begin                    */ \
-    macro (ompt_callback_thread_end,        ompt_callback_thread_end_t,         2) /* thread end                      */ \
-                                                                                                                         \
-    macro (ompt_callback_parallel_begin,    ompt_callback_parallel_begin_t,     3) /* parallel begin                  */ \
-    macro (ompt_callback_parallel_end,      ompt_callback_parallel_end_t,       4) /* parallel end                    */ \
-                                                                                                                         \
-    macro (ompt_callback_task_create,       ompt_callback_task_create_t,        5) /* task begin                      */ \
-    macro (ompt_callback_task_schedule,     ompt_callback_task_schedule_t,      6) /* task schedule                   */ \
-    macro (ompt_callback_implicit_task,     ompt_callback_implicit_task_t,      7) /* implicit task                   */ \
-                                                                                                                         \
-    macro (ompt_callback_target,            ompt_callback_target_t,             8) /* target                          */ \
-    macro (ompt_callback_target_data_op,    ompt_callback_target_data_op_t,     9) /* target data op                  */ \
-    macro (ompt_callback_target_submit,     ompt_callback_target_submit_t,     10) /* target  submit                  */ \
-                                                                                                                         \
-    macro (ompt_callback_control_tool,      ompt_callback_control_tool_t,      11) /* control tool                    */ \
-                                                                                                                         \
-    macro (ompt_callback_device_initialize, ompt_callback_device_initialize_t, 12) /* device initialize               */ \
-    macro (ompt_callback_device_finalize,   ompt_callback_device_finalize_t,   13) /* device finalize                 */ \
-                                                                                                                         \
-    macro (ompt_callback_device_load,       ompt_callback_device_load_t,       14) /* device load                     */ \
-    macro (ompt_callback_device_unload,     ompt_callback_device_unload_t,     15) /* device unload                   */ \
-                                                                                                                         \
-    /* Optional Events */                                                                                                \
-    macro (ompt_callback_sync_region_wait,  ompt_callback_sync_region_t,       16) /* sync region wait begin or end   */ \
-                                                                                                                         \
-    macro (ompt_callback_mutex_released,    ompt_callback_mutex_t,             17) /* mutex released                  */ \
-                                                                                                                         \
-    macro (ompt_callback_task_dependences,  ompt_callback_task_dependences_t,  18) /* report task dependences         */ \
-    macro (ompt_callback_task_dependence,   ompt_callback_task_dependence_t,   19) /* report task dependence          */ \
-                                                                                                                         \
-    macro (ompt_callback_work,              ompt_callback_work_t,              20) /* task at work begin or end       */ \
-                                                                                                                         \
-    macro (ompt_callback_master,            ompt_callback_master_t,            21) /* task at master begin or end     */ \
-                                                                                                                         \
-    macro (ompt_callback_target_map,        ompt_callback_target_map_t,        22) /* target map                      */ \
-                                                                                                                         \
-    macro (ompt_callback_sync_region,       ompt_callback_sync_region_t,       23) /* sync region begin or end        */ \
-                                                                                                                         \
-    macro (ompt_callback_lock_init,         ompt_callback_mutex_acquire_t,     24) /* lock init                       */ \
-    macro (ompt_callback_lock_destroy,      ompt_callback_mutex_t,             25) /* lock destroy                    */ \
-                                                                                                                         \
-    macro (ompt_callback_mutex_acquire,     ompt_callback_mutex_acquire_t,     26) /* mutex acquire                   */ \
-    macro (ompt_callback_mutex_acquired,    ompt_callback_mutex_t,             27) /* mutex acquired                  */ \
-                                                                                                                         \
-    macro (ompt_callback_nest_lock,         ompt_callback_nest_lock_t,         28) /* nest lock                       */ \
-                                                                                                                         \
-    macro (ompt_callback_flush,             ompt_callback_flush_t,             29) /* after executing flush           */ \
-                                                                                                                         \
-    macro (ompt_callback_cancel,            ompt_callback_cancel_t,            30) /* cancel innermost binding region */ \
-    macro (ompt_callback_idle,              ompt_callback_idle_t,              31) /* begin or end idle state         */
+//    macro (ompt_callback_thread_end,        ompt_callback_thread_end_t,         2) /* thread end                      */ \
+//                                                                                                                         \
+//    macro (ompt_callback_parallel_begin,    ompt_callback_parallel_begin_t,     3) /* parallel begin                  */ \
+//    macro (ompt_callback_parallel_end,      ompt_callback_parallel_end_t,       4) /* parallel end                    */ \
+//                                                                                                                         \
+//    macro (ompt_callback_task_create,       ompt_callback_task_create_t,        5) /* task begin                      */ \
+//    macro (ompt_callback_task_schedule,     ompt_callback_task_schedule_t,      6) /* task schedule                   */ \
+//    macro (ompt_callback_implicit_task,     ompt_callback_implicit_task_t,      7) /* implicit task                   */ \
+//                                                                                                                         \
+//    macro (ompt_callback_target,            ompt_callback_target_t,             8) /* target                          */ \
+//    macro (ompt_callback_target_data_op,    ompt_callback_target_data_op_t,     9) /* target data op                  */ \
+//    macro (ompt_callback_target_submit,     ompt_callback_target_submit_t,     10) /* target  submit                  */ \
+//                                                                                                                         \
+//    macro (ompt_callback_control_tool,      ompt_callback_control_tool_t,      11) /* control tool                    */ \
+//                                                                                                                         \
+//    macro (ompt_callback_device_initialize, ompt_callback_device_initialize_t, 12) /* device initialize               */ \
+//    macro (ompt_callback_device_finalize,   ompt_callback_device_finalize_t,   13) /* device finalize                 */ \
+//                                                                                                                         \
+//    macro (ompt_callback_device_load,       ompt_callback_device_load_t,       14) /* device load                     */ \
+//    macro (ompt_callback_device_unload,     ompt_callback_device_unload_t,     15) /* device unload                   */ \
+//                                                                                                                         \
+//    /* Optional Events */                                                                                                \
+//    macro (ompt_callback_sync_region_wait,  ompt_callback_sync_region_t,       16) /* sync region wait begin or end   */ \
+//                                                                                                                         \
+//    macro (ompt_callback_mutex_released,    ompt_callback_mutex_t,             17) /* mutex released                  */ \
+//                                                                                                                         \
+//    macro (ompt_callback_task_dependences,  ompt_callback_task_dependences_t,  18) /* report task dependences         */ \
+//    macro (ompt_callback_task_dependence,   ompt_callback_task_dependence_t,   19) /* report task dependence          */ \
+//                                                                                                                         \
+//    macro (ompt_callback_work,              ompt_callback_work_t,              20) /* task at work begin or end       */ \
+//                                                                                                                         \
+//    macro (ompt_callback_master,            ompt_callback_master_t,            21) /* task at master begin or end     */ \
+//                                                                                                                         \
+//    macro (ompt_callback_target_map,        ompt_callback_target_map_t,        22) /* target map                      */ \
+//                                                                                                                         \
+//    macro (ompt_callback_sync_region,       ompt_callback_sync_region_t,       23) /* sync region begin or end        */ \
+//                                                                                                                         \
+//    macro (ompt_callback_lock_init,         ompt_callback_mutex_acquire_t,     24) /* lock init                       */ \
+//    macro (ompt_callback_lock_destroy,      ompt_callback_mutex_t,             25) /* lock destroy                    */ \
+//                                                                                                                         \
+//    macro (ompt_callback_mutex_acquire,     ompt_callback_mutex_acquire_t,     26) /* mutex acquire                   */ \
+//    macro (ompt_callback_mutex_acquired,    ompt_callback_mutex_t,             27) /* mutex acquired                  */ \
+//                                                                                                                         \
+//    macro (ompt_callback_nest_lock,         ompt_callback_nest_lock_t,         28) /* nest lock                       */ \
+//                                                                                                                         \
+//    macro (ompt_callback_flush,             ompt_callback_flush_t,             29) /* after executing flush           */ \
+//                                                                                                                         \
+//    macro (ompt_callback_cancel,            ompt_callback_cancel_t,            30) /* cancel innermost binding region */ \
+//    macro (ompt_callback_idle,              ompt_callback_idle_t,              31) /* begin or end idle state         */
 
 
 

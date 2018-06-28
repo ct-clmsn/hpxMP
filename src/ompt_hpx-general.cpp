@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+
 #if KMP_OS_UNIX
 #include <dlfcn.h>
 #endif
@@ -151,4 +153,92 @@ void ompt_pre_init() {
 #if OMPT_DEBUG
     printf("ompt_pre_init(): ompt_enabled = %d\n", ompt_enabled);
 #endif
+}
+
+void ompt_post_init() {
+    //--------------------------------------------------
+    // Execute the post-initialization logic only once.
+    //--------------------------------------------------
+    static int ompt_post_initialized = 0;
+
+    if (ompt_post_initialized)
+        return;
+
+    ompt_post_initialized = 1;
+
+    //--------------------------------------------------
+    // Initialize the tool if so indicated.
+    //--------------------------------------------------
+    if (ompt_start_tool_result) {
+        ompt_enabled.enabled = !!ompt_start_tool_result->initialize(
+                ompt_fn_lookup, &(ompt_start_tool_result->tool_data));
+
+        if (!ompt_enabled.enabled) {
+            // tool not enabled, zero out the bitmap, and done
+            memset(&ompt_enabled, 0, sizeof(ompt_enabled));
+            return;
+        }
+
+//        ompt_thread_t *root_thread = ompt_get_thread();
+//
+//        ompt_set_thread_state(root_thread, omp_state_overhead);
+//
+//        if (ompt_enabled.ompt_callback_thread_begin) {
+//            ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
+//                    ompt_thread_initial, __ompt_get_thread_data_internal());
+//        }
+//        ompt_data_t *task_data;
+//        __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
+//        if (ompt_enabled.ompt_callback_task_create) {
+//            ompt_callbacks.ompt_callback(ompt_callback_task_create)(
+//                    NULL, NULL, task_data, ompt_task_initial, 0, NULL);
+//        }
+//
+//        ompt_set_thread_state(root_thread, omp_state_work_serial);
+    }
+}
+
+/*****************************************************************************
+ * callbacks
+ ****************************************************************************/
+
+OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
+                                       ompt_callback_t callback) {
+    std::cout<<"ompt_set_callback"<<std::endl;
+    switch (which) {
+
+#define ompt_event_macro(event_name, callback_type, event_id)                  \
+  case event_name:                                                             \
+    if (ompt_event_implementation_status(event_name)) {                        \
+      ompt_callbacks.ompt_callback(event_name) = (callback_type)callback;      \
+      ompt_enabled.event_name = (callback != 0);                               \
+    }                                                                          \
+    if (callback)                                                              \
+      return ompt_event_implementation_status(event_name);                     \
+    else                                                                       \
+      return ompt_set_always;
+
+        FOREACH_OMPT_EVENT(ompt_event_macro)
+
+#undef ompt_event_macro
+
+        default:
+            return ompt_set_error;
+    }
+}
+
+/*****************************************************************************
+ * API inquiry for tool
+ ****************************************************************************/
+
+static ompt_interface_fn_t ompt_fn_lookup(const char *s) {
+
+#define ompt_interface_fn(fn)                                                  \
+  fn##_t fn##_f = fn;                                                          \
+  if (strcmp(s, #fn) == 0)                                                     \
+    return (ompt_interface_fn_t)fn##_f;
+
+    FOREACH_OMPT_INQUIRY_FN(ompt_interface_fn)
+
+    return (ompt_interface_fn_t)0;
 }
