@@ -1,3 +1,4 @@
+#include "ompt-internal.h"
 #include "intel_hpxMP.h"
 
 #include <iostream>
@@ -184,6 +185,10 @@ int  __kmpc_cancel_barrier(ident_t* loc_ref, kmp_int32 gtid){
 }
 
 int __kmpc_global_thread_num(ident_t *loc){
+#if OMPT_SUPPORT
+    ompt_pre_init();
+#endif
+    start_backend();
     if(hpx_backend)
         return hpx_backend->get_thread_num();
     return 0;
