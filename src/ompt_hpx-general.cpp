@@ -231,6 +231,18 @@ OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
 }
 
 /*****************************************************************************
+ * misc
+ ****************************************************************************/
+//TODO: not exactly getting unique id, geting thread num now
+OMPT_API_ROUTINE uint64_t ompt_get_unique_id(void) {
+    int thread_num;
+    if(hpx_backend)
+        thread_num = hpx_backend->get_thread_num();
+    return thread_num;
+    //return __ompt_get_unique_id_internal();
+}
+
+/*****************************************************************************
  * API inquiry for tool
  ****************************************************************************/
 
