@@ -263,7 +263,7 @@ static ompt_interface_fn_t ompt_fn_lookup(const char *s) {
  * From ompt-specific.cpp
  ****************************************************************************/
 ompt_data_t *__ompt_get_thread_data_internal() {
-    thread_local ompt_data_t data;
+    static thread_local ompt_data_t data;
     //std::cout<<hpx::threads::get_self_id()<<std::endl;
     //data = reinterpret_cast<ompt_data_t*>(hpx::threads::get_thread_data(hpx::threads::get_self_id()));
     return &data;

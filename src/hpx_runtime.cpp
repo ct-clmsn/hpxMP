@@ -40,6 +40,13 @@ void fini_runtime()
     cout << "Stopping HPX OpenMP runtime" << endl;
     //this should only be done if this runtime started hpx
     hpx::get_runtime().stop();
+#if OMPT_SUPPORT
+    if (ompt_enabled.ompt_callback_thread_end) {
+        ompt_callbacks.ompt_callback(ompt_callback_thread_end)(
+//                &(root->r.r_uber_thread->th.ompt_thread_info.thread_data));
+                    __ompt_get_thread_data_internal());
+    }
+#endif
     cout << "Stopped" << endl;
 }
 
@@ -541,6 +548,11 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
   }
 #endif
         kmp_invoke(thread_func, tid, tid, argc, argv);
+#if OMPT_SUPPORT
+        if (ompt_enabled.ompt_callback_thread_end) {
+            ompt_callbacks.ompt_callback(ompt_callback_thread_end)(&thread_data);
+        }
+#endif
     }
     int count = 0;
     int max_count = 10;
