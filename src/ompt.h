@@ -106,9 +106,9 @@
     /*--- Mandatory Events ---*/                                                                                         \
     macro (ompt_callback_thread_begin,      ompt_callback_thread_begin_t,       1) /* thread begin                    */ \
     macro (ompt_callback_thread_end,        ompt_callback_thread_end_t,         2) /* thread end                      */ \
-//                                                                                                                         \
-//    macro (ompt_callback_parallel_begin,    ompt_callback_parallel_begin_t,     3) /* parallel begin                  */ \
-//    macro (ompt_callback_parallel_end,      ompt_callback_parallel_end_t,       4) /* parallel end                    */ \
+                                                                                                                         \
+      macro (ompt_callback_parallel_begin,    ompt_callback_parallel_begin_t,     3) /* parallel begin                  */ \
+      macro (ompt_callback_parallel_end,      ompt_callback_parallel_end_t,       4) /* parallel end                    */ \
 //                                                                                                                         \
 //    macro (ompt_callback_task_create,       ompt_callback_task_create_t,        5) /* task begin                      */ \
 //    macro (ompt_callback_task_schedule,     ompt_callback_task_schedule_t,      6) /* task schedule                   */ \

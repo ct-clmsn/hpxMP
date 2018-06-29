@@ -651,6 +651,24 @@ void fork_and_sync( invoke_func kmp_invoke, microtask_t thread_func,
 //TODO: according to the spec, the current thread should be thread 0 of the new team, and execute the new work.
 void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc, void** argv)
 {
+    ompt_invoker_t a;
+#if OMPT_SUPPORT
+    if (ompt_enabled.enabled) {
+        if (ompt_enabled.ompt_callback_parallel_begin) {
+//            int team_size = master_set_numthreads
+//                            ? master_set_numthreads
+//                            : get__nproc_2(parent_team, master_tid);
+//            ompt_callbacks.ompt_callback(ompt_callback_parallel_begin)(
+//                    parent_task_data, ompt_frame, &ompt_parallel_data, team_size,
+//                    OMPT_INVOKER(call_context), return_address);
+//        }
+            ompt_callbacks.ompt_callback(ompt_callback_parallel_begin)(
+                    0, 0, 0, 0,
+                    a, 0);
+        }
+        //master_th->th.ompt_thread_info.state = omp_state_overhead;
+    }
+#endif
     omp_task_data *current_task = get_task_data();
     if( hpx::threads::get_self_ptr() ) {
         fork_worker(kmp_invoke, thread_func, argc, argv, current_task);
@@ -670,5 +688,27 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
         }
     }
     current_task->set_threads_requested(current_task->icv.nthreads );
+#if OMPT_SUPPORT
+
+//    *exit_runtime_p = NULL;
+    if (ompt_enabled.enabled) {
+//        OMPT_CUR_TASK_INFO(master_th)->frame.exit_frame = NULL;
+//        if (ompt_enabled.ompt_callback_implicit_task) {
+//            ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
+//                    ompt_scope_end, NULL, implicit_task_data, 1,
+//                    OMPT_CUR_TASK_INFO(master_th)->thread_num);
+//        }
+//        __ompt_lw_taskteam_unlink(master_th);
+
+        if (ompt_enabled.ompt_callback_parallel_end) {
+            ompt_callbacks.ompt_callback(ompt_callback_parallel_end)(
+//                    OMPT_CUR_TEAM_DATA(master_th), OMPT_CUR_TASK_DATA(master_th),
+//                    OMPT_INVOKER(call_context), return_address);
+                    0, 0,
+                   a, 0);
+        }
+//        master_th->th.ompt_thread_info.state = omp_state_overhead;
+    }
+#endif
 }
 
