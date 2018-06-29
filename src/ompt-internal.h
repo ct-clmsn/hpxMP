@@ -19,7 +19,7 @@
 #include "hpx_runtime.h"
 
 /*****************************************************************************
- * types
+ * types from ompt-specific.h
  ***************************************************************************/
 typedef omp_task_data ompt_thread_t;
 extern std::shared_ptr<hpx_runtime> hpx_backend;

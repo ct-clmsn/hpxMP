@@ -6,7 +6,7 @@
 
 #define  HPX_LIMIT 9
 #include "hpx_runtime.h"
-
+#include "ompt-internal.h"
 #include <functional>
 #include <memory>
 
@@ -524,6 +524,22 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
     if(argc == 0) { //note: kmp_invoke segfaults iff argc == 0
         thread_func(&tid, &tid);
     } else {
+#if OMPT_SUPPORT
+        //ompt_data_t *thread_data;
+        thread_local ompt_data_t thread_data;
+  if (ompt_enabled.enabled) {
+//    thread_data = &(this_thr->th.ompt_thread_info.thread_data);
+//    thread_data->ptr = NULL;
+//
+//    this_thr->th.ompt_thread_info.state = omp_state_overhead;
+//    this_thr->th.ompt_thread_info.wait_id = 0;
+//    this_thr->th.ompt_thread_info.idle_frame = OMPT_GET_FRAME_ADDRESS(0);
+    if (ompt_enabled.ompt_callback_thread_begin) {
+      ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
+          ompt_thread_worker, &thread_data);
+    }
+  }
+#endif
         kmp_invoke(thread_func, tid, tid, argc, argv);
     }
     int count = 0;

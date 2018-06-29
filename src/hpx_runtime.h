@@ -32,6 +32,8 @@
 #include <hpx/util/high_resolution_timer.hpp>
 #include <map>
 
+#define OMPT_SUPPORT 1
+
 #include "icv-vars.h"
 
 using hpx::threads::executors::local_priority_queue_executor;

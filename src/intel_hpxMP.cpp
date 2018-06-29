@@ -45,6 +45,10 @@ __kmpc_fork_call(ident_t *loc, kmp_int32 argc, kmpc_micro microtask, ...) {
     }
     va_end( ap );
     void ** args = argv.data();
+    
+#if OMPT_SUPPORT
+    //TODO:ompt support 
+#endif
 
     hpx_backend->fork(__kmp_invoke_microtask, microtask, argc, args);
 }

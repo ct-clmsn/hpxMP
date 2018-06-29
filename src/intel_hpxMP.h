@@ -1,8 +1,6 @@
 #include "hpx_runtime.h"
 #include <cstdarg>
 
-#define OMPT_SUPPORT 1
-
 typedef int kmp_int32;
 typedef long long kmp_int64;
 
