@@ -208,7 +208,7 @@ void ompt_post_init() {
 
 OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
                                        ompt_callback_t callback) {
-    std::cout<<"ompt_set_callback"<<std::endl;
+    //std::cout<<"ompt_set_callback"<<std::endl;
     switch (which) {
 
 #define ompt_event_macro(event_name, callback_type, event_id)                  \

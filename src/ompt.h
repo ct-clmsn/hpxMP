@@ -101,6 +101,9 @@
     macro (kmp_mutex_impl_queuing, 2)      /* based on some fair policy */           \
     macro (kmp_mutex_impl_speculative, 3)  /* based on HW-supported speculation */
 
+
+//    macro (ompt_callback_task_schedule,     ompt_callback_task_schedule_t,      6) /* task schedule                   */ \
+
 #define FOREACH_OMPT_EVENT(macro)                                                                                        \
                                                                                                                          \
     /*--- Mandatory Events ---*/                                                                                         \
@@ -111,8 +114,7 @@
       macro (ompt_callback_parallel_end,      ompt_callback_parallel_end_t,       4) /* parallel end                    */ \
                                                                                                                          \
     macro (ompt_callback_task_create,       ompt_callback_task_create_t,        5) /* task begin                      */ \
-//    macro (ompt_callback_task_schedule,     ompt_callback_task_schedule_t,      6) /* task schedule                   */ \
-//    macro (ompt_callback_implicit_task,     ompt_callback_implicit_task_t,      7) /* implicit task                   */ \
+    macro (ompt_callback_implicit_task,     ompt_callback_implicit_task_t,      7) /* implicit task                   */ \
 //                                                                                                                         \
 //    macro (ompt_callback_target,            ompt_callback_target_t,             8) /* target                          */ \
 //    macro (ompt_callback_target_data_op,    ompt_callback_target_data_op_t,     9) /* target data op                  */ \

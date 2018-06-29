@@ -547,6 +547,34 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
     }
   }
 #endif
+#if OMPT_SUPPORT
+//        void *dummy;
+//        void **exit_runtime_p;
+//        ompt_data_t *my_task_data;
+//        ompt_data_t *my_parallel_data;
+//        int ompt_team_size;
+//
+//        if (ompt_enabled.enabled) {
+//            exit_runtime_p = &(
+//                    team->t.t_implicit_task_taskdata[tid].ompt_task_info.frame.exit_frame);
+//        } else {
+//            exit_runtime_p = &dummy;
+//        }
+//
+//        my_task_data =
+//                &(team->t.t_implicit_task_taskdata[tid].ompt_task_info.task_data);
+//        my_parallel_data = &(team->t.ompt_team_info.parallel_data);
+//        if (ompt_enabled.ompt_callback_implicit_task) {
+//            ompt_team_size = team->t.t_nproc;
+//            ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
+//                    ompt_scope_begin, my_parallel_data, my_task_data, ompt_team_size,
+//                    __kmp_tid_from_gtid(gtid));
+//            OMPT_CUR_TASK_INFO(this_thr)->thread_num = __kmp_tid_from_gtid(gtid);
+//        }
+        ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
+                ompt_scope_begin, 0, 0, 0,
+                0);
+#endif
         kmp_invoke(thread_func, tid, tid, argc, argv);
 #if OMPT_SUPPORT
         if (ompt_enabled.ompt_callback_thread_end) {
@@ -693,11 +721,11 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
 //    *exit_runtime_p = NULL;
     if (ompt_enabled.enabled) {
 //        OMPT_CUR_TASK_INFO(master_th)->frame.exit_frame = NULL;
-//        if (ompt_enabled.ompt_callback_implicit_task) {
-//            ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
-//                    ompt_scope_end, NULL, implicit_task_data, 1,
-//                    OMPT_CUR_TASK_INFO(master_th)->thread_num);
-//        }
+        if (ompt_enabled.ompt_callback_implicit_task) {
+            ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
+                    ompt_scope_end, NULL, 0, 1,
+                   0);
+        }
 //        __ompt_lw_taskteam_unlink(master_th);
 
         if (ompt_enabled.ompt_callback_parallel_end) {
