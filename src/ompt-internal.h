@@ -18,6 +18,7 @@
 #include "ompt.h"
 #include "hpx_runtime.h"
 
+static std::map<uint64_t , ompt_data_t> ompt_data;
 /*****************************************************************************
  * types from ompt-specific.h
  ***************************************************************************/
