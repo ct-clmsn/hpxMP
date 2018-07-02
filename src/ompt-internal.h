@@ -17,7 +17,7 @@
 #include "ompt-event-specific.h"
 #include "ompt.h"
 #include "hpx_runtime.h"
-static std::map<uint64_t , ompt_data_t> ompt_data;
+
 /*****************************************************************************
  * types from ompt-specific.h
  ***************************************************************************/
@@ -93,6 +93,8 @@ typedef struct {
   int ompt_task_yielded;
   void *idle_frame;
 } ompt_thread_info_t;
+
+static std::map<uint64_t , ompt_thread_info_t> ompt_data;
 
 extern ompt_callbacks_internal_t ompt_callbacks;
 

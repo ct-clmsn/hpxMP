@@ -187,7 +187,7 @@ void ompt_post_init() {
         //hpx::threads::set_thread_state(hpx::threads::get_self_id());
 
         uint64_t id =  hpx_backend->get_thread_num();
-        ompt_data[id]=ompt_data_none;
+        ompt_data[id].thread_data=ompt_data_none;
 
         if (ompt_enabled.ompt_callback_thread_begin) {
             ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
@@ -279,7 +279,7 @@ ompt_data_t *__ompt_get_thread_data_internal() {
     //std::cout<<hpx::threads::get_self_id()<<std::endl;
     //data = reinterpret_cast<ompt_data_t*>(hpx::threads::get_thread_data(hpx::threads::get_self_id()));
     uint64_t id= hpx_backend->get_thread_num();
-    return &ompt_data[id];
+    return &ompt_data[id].thread_data;
     //return &data;
 //    if (__kmp_get_gtid() >= 0) {
 //        kmp_info_t *thread = ompt_get_thread();

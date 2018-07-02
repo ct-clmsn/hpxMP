@@ -534,8 +534,8 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
 #if OMPT_SUPPORT
         //ompt_data_t *thread_data;
         //thread_local ompt_data_t thread_data;
-        uint64_t id =  hpx_backend->get_thread_num();
-        ompt_data[id]=ompt_data_none;
+    thread_local uint64_t id =  hpx_backend->get_thread_num();
+    ompt_data[id].thread_data=ompt_data_none;
   if (ompt_enabled.enabled) {
 //    thread_data = &(this_thr->th.ompt_thread_info.thread_data);
 //    thread_data->ptr = NULL;
@@ -580,7 +580,8 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
         kmp_invoke(thread_func, tid, tid, argc, argv);
 #if OMPT_SUPPORT
         if (ompt_enabled.ompt_callback_thread_end) {
-            ompt_callbacks.ompt_callback(ompt_callback_thread_end)(&ompt_data[id]);
+//            std::cout<<"id="<<id<<std::endl;
+            ompt_callbacks.ompt_callback(ompt_callback_thread_end)(__ompt_get_thread_data_internal());
         }
 #endif
     }
