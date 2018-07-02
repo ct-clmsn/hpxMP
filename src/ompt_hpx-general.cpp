@@ -188,7 +188,7 @@ void ompt_post_init() {
 
         uint64_t id =  hpx_backend->get_thread_num();
         ompt_data[id].thread_data=ompt_data_none;
-
+        ompt_set_thread_state(&ompt_data[id], omp_state_overhead);
         if (ompt_enabled.ompt_callback_thread_begin) {
             ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
                     ompt_thread_initial, __ompt_get_thread_data_internal());
