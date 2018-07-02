@@ -160,7 +160,6 @@ void ompt_post_init() {
     // Execute the post-initialization logic only once.
     //--------------------------------------------------
     static int ompt_post_initialized = 0;
-   // static std::map<int, ompt_data_t> ompt_data;
 
     if (ompt_post_initialized)
         return;
@@ -186,8 +185,10 @@ void ompt_post_init() {
         //ompt_set_thread_state(root_thread, omp_state_overhead);
         //TODO:confused get_self_id()
         //hpx::threads::set_thread_state(hpx::threads::get_self_id());
+
         uint64_t id =  hpx_backend->get_thread_num();
         ompt_data[id]=ompt_data_none;
+
         if (ompt_enabled.ompt_callback_thread_begin) {
             ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
                     ompt_thread_initial, __ompt_get_thread_data_internal());
@@ -200,7 +201,7 @@ void ompt_post_init() {
                     NULL, NULL, task_data, ompt_task_initial, 0, NULL);
         }
 
-        //ompt_set_thread_state(root_thread, omp_state_work_serial);
+//        ompt_set_thread_state(root_thread, omp_state_work_serial);
     }
 }
 
@@ -271,6 +272,7 @@ ompt_data_t *__ompt_get_thread_data_internal() {
     //data = reinterpret_cast<ompt_data_t*>(hpx::threads::get_thread_data(hpx::threads::get_self_id()));
     uint64_t id= hpx_backend->get_thread_num();
     return &ompt_data[id];
+    //return &data;
 //    if (__kmp_get_gtid() >= 0) {
 //        kmp_info_t *thread = ompt_get_thread();
 //        if (thread == NULL)

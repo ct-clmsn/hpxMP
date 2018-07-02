@@ -39,14 +39,14 @@ void fini_runtime()
 {
     cout << "Stopping HPX OpenMP runtime" << endl;
     //this should only be done if this runtime started hpx
-    hpx::get_runtime().stop();
 #if OMPT_SUPPORT
     if (ompt_enabled.ompt_callback_thread_end) {
         ompt_callbacks.ompt_callback(ompt_callback_thread_end)(
 //                &(root->r.r_uber_thread->th.ompt_thread_info.thread_data));
-                    __ompt_get_thread_data_internal());
+                __ompt_get_thread_data_internal());
     }
 #endif
+    hpx::get_runtime().stop();
     cout << "Stopped" << endl;
 }
 
