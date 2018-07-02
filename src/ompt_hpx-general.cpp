@@ -235,6 +235,14 @@ OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
 }
 
 /*****************************************************************************
+ * tasks
+ ****************************************************************************/
+
+OMPT_API_ROUTINE ompt_data_t *ompt_get_thread_data(void) {
+    return __ompt_get_thread_data_internal();
+}
+
+/*****************************************************************************
  * misc
  ****************************************************************************/
 //TODO: not exactly getting unique id, geting thread num now
