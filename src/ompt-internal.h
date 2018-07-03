@@ -26,6 +26,7 @@ extern std::shared_ptr<hpx_runtime> hpx_backend;
 ompt_data_t *__ompt_get_thread_data_internal();
 
 
+
 #define OMPT_VERSION 1
 
 #define _OMP_EXTERN extern "C"
@@ -144,3 +145,4 @@ extern ompt_callbacks_active_t ompt_enabled;
 inline void ompt_set_thread_state(ompt_thread_info_t* th, omp_state_t state) {
     th->state=state;
 }
+ompt_thread_info_t* __ompt_get_thread_info_internal();

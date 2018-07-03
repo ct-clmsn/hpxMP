@@ -289,3 +289,8 @@ ompt_data_t *__ompt_get_thread_data_internal() {
 //    }
 //    return NULL;
 }
+
+ompt_thread_info_t* __ompt_get_thread_info_internal(){
+    uint64_t id= hpx_backend->get_thread_num();
+    return &ompt_data[id];
+}

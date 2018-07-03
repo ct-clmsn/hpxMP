@@ -682,27 +682,25 @@ void fork_and_sync( invoke_func kmp_invoke, microtask_t thread_func,
 //TODO: according to the spec, the current thread should be thread 0 of the new team, and execute the new work.
 void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc, void** argv)
 {
+    omp_task_data *current_task = get_task_data();
+#if OMPT_SUPPORT
     ompt_invoker_t a;
     ompt_data_t *parent_task_data;
     parent_task_data = __ompt_get_thread_data_internal();
-#if OMPT_SUPPORT
+    if (ompt_enabled.enabled) {
+        ompt_thread_info_t* master_th = __ompt_get_thread_info_internal();
+    }
     if (ompt_enabled.enabled) {
         if (ompt_enabled.ompt_callback_parallel_begin) {
-//            int team_size = master_set_numthreads
-//                            ? master_set_numthreads
-//                            : get__nproc_2(parent_team, master_tid);
-//            ompt_callbacks.ompt_callback(ompt_callback_parallel_begin)(
-//                    parent_task_data, ompt_frame, &ompt_parallel_data, team_size,
-//                    OMPT_INVOKER(call_context), return_address);
-//        }
+            int team_size = current_task->icv.nthreads;
             ompt_callbacks.ompt_callback(ompt_callback_parallel_begin)(
-                    parent_task_data, 0, 0, 0,
+                    parent_task_data, 0, 0, team_size,
                     a, 0);
         }
         //master_th->th.ompt_thread_info.state = omp_state_overhead;
     }
 #endif
-    omp_task_data *current_task = get_task_data();
+
     if( hpx::threads::get_self_ptr() ) {
         fork_worker(kmp_invoke, thread_func, argc, argv, current_task);
     } else {
