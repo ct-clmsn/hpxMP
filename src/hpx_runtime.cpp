@@ -735,12 +735,9 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
 
         if (ompt_enabled.ompt_callback_parallel_end) {
             ompt_callbacks.ompt_callback(ompt_callback_parallel_end)(
-//                    OMPT_CUR_TEAM_DATA(master_th), OMPT_CUR_TASK_DATA(master_th),
-//                    OMPT_INVOKER(call_context), return_address);
-                    0, 0,
-                   a, 0);
+                    &ompt_parallel_data, __ompt_get_thread_data_internal(),a,
+                    0);
         }
-//        master_th->th.ompt_thread_info.state = omp_state_overhead;
     }
 #endif
 }
