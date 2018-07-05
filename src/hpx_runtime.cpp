@@ -573,9 +573,11 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
 //                    __kmp_tid_from_gtid(gtid));
 //            OMPT_CUR_TASK_INFO(this_thr)->thread_num = __kmp_tid_from_gtid(gtid);
 //        }
-        ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
-                ompt_scope_begin, 0, 0, 0,
-                0);
+        if (ompt_enabled.ompt_callback_implicit_task) {
+            ompt_callbacks.ompt_callback(ompt_callback_implicit_task)(
+                    ompt_scope_begin, 0, 0, 0,
+                    0);
+        }
 #endif
         kmp_invoke(thread_func, tid, tid, argc, argv);
     }
@@ -722,7 +724,6 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
     }
     current_task->set_threads_requested(current_task->icv.nthreads );
 #if OMPT_SUPPORT
-
 //    *exit_runtime_p = NULL;
     if (ompt_enabled.enabled) {
 //        OMPT_CUR_TASK_INFO(master_th)->frame.exit_frame = NULL;
