@@ -578,12 +578,6 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
                 0);
 #endif
         kmp_invoke(thread_func, tid, tid, argc, argv);
-#if OMPT_SUPPORT
-        if (ompt_enabled.ompt_callback_thread_end) {
-//            std::cout<<"id="<<id<<std::endl;
-            ompt_callbacks.ompt_callback(ompt_callback_thread_end)(__ompt_get_thread_data_internal());
-        }
-#endif
     }
     int count = 0;
     int max_count = 10;
@@ -609,6 +603,12 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
         std::unique_lock<mutex_type> lk(barrier_mtx);
         cond.notify_all();
     }
+#if OMPT_SUPPORT
+    if (ompt_enabled.ompt_callback_thread_end) {
+//            std::cout<<"id="<<id<<std::endl;
+        ompt_callbacks.ompt_callback(ompt_callback_thread_end)(__ompt_get_thread_data_internal());
+    }
+#endif
 }
 
 // This is the only place where get_thread can't be called, since
