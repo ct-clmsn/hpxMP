@@ -180,25 +180,28 @@ void ompt_post_init() {
         }
 
         //ompt_thread_t *root_thread = ompt_get_thread();
-        ompt_thread_t *root_thread = hpx_backend->get_task_data();
+        //ompt_thread_t *root_thread = hpx_backend->get_task_data();
+        ompt_thread_info_t *root_thread = __ompt_get_thread_info_internal();
 
         //ompt_set_thread_state(root_thread, omp_state_overhead);
         //TODO:confused get_self_id()
         //hpx::threads::set_thread_state(hpx::threads::get_self_id());
+        ompt_set_thread_state(root_thread, omp_state_overhead);
 
         uint64_t id =  hpx_backend->get_thread_num();
         ompt_data[id].thread_data=ompt_data_none;
-        ompt_set_thread_state(&ompt_data[id], omp_state_overhead);
         if (ompt_enabled.ompt_callback_thread_begin) {
             ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
                     ompt_thread_initial, __ompt_get_thread_data_internal());
         }
-        ompt_data_t *task_data;
-      //  __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
-       task_data=__ompt_get_thread_data_internal();
+        
+        //TODO: temporary
+        ompt_data_t task_data;
+        //__ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
+        //task_data=__ompt_get_thread_data_internal();
         if (ompt_enabled.ompt_callback_task_create) {
             ompt_callbacks.ompt_callback(ompt_callback_task_create)(
-                    NULL, NULL, task_data, ompt_task_initial, 0, NULL);
+                    NULL, NULL, &task_data, ompt_task_initial, 0, NULL);
         }
 
 //        ompt_set_thread_state(root_thread, omp_state_work_serial);
@@ -245,12 +248,20 @@ OMPT_API_ROUTINE ompt_data_t *ompt_get_thread_data(void) {
 /*****************************************************************************
  * misc
  ****************************************************************************/
-//TODO: not exactly getting unique id, geting thread num now
+#define KMP_TEST_THEN_INC64(p)                                                 \
+  __sync_fetch_and_add((volatile long long *)(p), 1LL)
+
 OMPT_API_ROUTINE uint64_t ompt_get_unique_id(void) {
-    int thread_num;
-    if(hpx_backend)
-        thread_num = hpx_backend->get_thread_num();
-    return thread_num;
+    static uint64_t thread=1;
+    static __thread uint64_t ID=0;
+    if(ID==0) {
+        if (hpx_backend){
+            uint64_t new_thread = KMP_TEST_THEN_INC64((long long *)&thread);
+            //thread_num = hpx_backend->get_thread_num();
+            ID = new_thread << (sizeof(uint64_t) * 8 - 16);
+        }
+    }
+    return ++ID;
     //return __ompt_get_unique_id_internal();
 }
 

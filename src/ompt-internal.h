@@ -146,3 +146,8 @@ inline void ompt_set_thread_state(ompt_thread_info_t* th, omp_state_t state) {
     th->state=state;
 }
 ompt_thread_info_t* __ompt_get_thread_info_internal();
+
+int __ompt_get_task_info_internal(int ancestor_level, int *type,
+                                  ompt_data_t **task_data,
+                                  omp_frame_t **task_frame,
+                                  ompt_data_t **parallel_data, int *thread_num);
