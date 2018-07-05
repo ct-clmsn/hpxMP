@@ -195,13 +195,12 @@ void ompt_post_init() {
                     ompt_thread_initial, __ompt_get_thread_data_internal());
         }
         
-        //TODO: temporary
-        ompt_data_t task_data;
-        //__ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
+        ompt_data_t *task_data;
+        __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
         //task_data=__ompt_get_thread_data_internal();
         if (ompt_enabled.ompt_callback_task_create) {
             ompt_callbacks.ompt_callback(ompt_callback_task_create)(
-                    NULL, NULL, &task_data, ompt_task_initial, 0, NULL);
+                    NULL, NULL, task_data, ompt_task_initial, 0, NULL);
         }
 
 //        ompt_set_thread_state(root_thread, omp_state_work_serial);
@@ -304,4 +303,14 @@ ompt_data_t *__ompt_get_thread_data_internal() {
 ompt_thread_info_t* __ompt_get_thread_info_internal(){
     uint64_t id= hpx_backend->get_thread_num();
     return &ompt_data[id];
+}
+
+int __ompt_get_task_info_internal(int ancestor_level, int *type,
+                                  ompt_data_t **task_data,
+                                  omp_frame_t **task_frame,
+                                  ompt_data_t **parallel_data,
+                                  int *thread_num) {
+    uint64_t id= hpx_backend->get_thread_num();
+    *task_data = &ompt_data[id].task_data;
+    return 0;
 }

@@ -686,8 +686,8 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
 #if OMPT_SUPPORT
     ompt_invoker_t a;
     ompt_data_t *parent_task_data;
+    __ompt_get_task_info_internal(0, NULL, &parent_task_data, NULL, NULL, NULL);
     ompt_data_t ompt_parallel_data=ompt_data_none;
-    parent_task_data = __ompt_get_thread_data_internal();
     if (ompt_enabled.enabled) {
         ompt_thread_info_t* master_th = __ompt_get_thread_info_internal();
     }
