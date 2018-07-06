@@ -18,6 +18,7 @@
  * ompt include files
  ****************************************************************************/
 #include "ompt-internal.h"
+#include "hpx_runtime.h"
 
 /*****************************************************************************
  * macros
@@ -233,6 +234,19 @@ OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
         default:
             return ompt_set_error;
     }
+}
+/*****************************************************************************
+ * parallel regions
+ ****************************************************************************/
+
+OMPT_API_ROUTINE int ompt_get_parallel_info(int ancestor_level,
+                                            ompt_data_t **parallel_data,
+                                            int *team_size) {
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    *parallel_data = &omp_task->parallel_info.parallel_data;
+    return 0;
+    //return __ompt_get_parallel_info_internal(ancestor_level, parallel_data,
+                                             //team_size);
 }
 
 /*****************************************************************************

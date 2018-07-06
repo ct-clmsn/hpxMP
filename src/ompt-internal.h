@@ -73,11 +73,6 @@ typedef struct {
 #endif /* OMP_40_ENABLED */
 } ompt_task_info_t;
 
-typedef struct {
-  ompt_data_t parallel_data;
-  void *master_return_address;
-} ompt_team_info_t;
-
 typedef struct ompt_lw_taskteam_s {
   ompt_team_info_t ompt_team_info;
   ompt_task_info_t ompt_task_info;

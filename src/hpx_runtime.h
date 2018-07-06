@@ -31,7 +31,7 @@
 
 #include <hpx/util/high_resolution_timer.hpp>
 #include <map>
-
+#include "ompt.h"
 #define OMPT_SUPPORT 1
 
 #include "icv-vars.h"
@@ -151,7 +151,13 @@ struct parallel_region {
 #endif
 };
 
+//temparory moved to here
+typedef struct {
+    ompt_data_t parallel_data;
+    void *master_return_address;
+} ompt_team_info_t;
 
+static const ompt_team_info_t ompt_team_none = {ompt_data_none,0};
 //What parts of a task could I move to a shared state to get a performance
 // improvement, or some other, orgizational improvement?
 // icvs?
@@ -165,6 +171,7 @@ class omp_task_data {
             icv.device = global;
             icv.nthreads = init_num_threads;
             threads_requested = icv.nthreads;
+            parallel_info = ompt_team_none;
         };
 
         //should be used for implicit tasks/threads
@@ -199,7 +206,6 @@ class omp_task_data {
                 threads_requested = 1;
             }
         }
-
         int local_thread_num;
         //int global_thread_num;
         int threads_requested;
@@ -210,6 +216,7 @@ class omp_task_data {
         int single_counter{0};
         int loop_num{0};
         bool in_taskgroup{false};
+        ompt_team_info_t parallel_info;
         //shared_future<void> last_df_task;
 
 #ifdef OMP_COMPLIANT
