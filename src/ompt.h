@@ -31,7 +31,7 @@
     macro(ompt_set_callback)                \
     macro(ompt_get_unique_id)               \
     macro(ompt_get_thread_data)             \
-    macro (ompt_get_parallel_info)          
+    macro (ompt_get_parallel_info)
 //    macro (ompt_enumerate_states)           \
 //    macro (ompt_enumerate_mutex_impls)      \
 //                                            \
