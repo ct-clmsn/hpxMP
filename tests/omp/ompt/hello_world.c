@@ -7,14 +7,15 @@
 
 int main (int argc, char *argv[])
 {
-/* Fork a team of threads giving them their own copies of variables */
+    int nthreads;
+    omp_state_t state;
 #pragma omp parallel num_threads(2)
     {
         omp_wait_id_t tid;
-        /* Obtain thread number */
         tid = omp_get_thread_num();
-        // state = ompt_get_state(tid);
         printf("Hello World from thread = [%lu]\n", tid);
+        /*won't work without this line*/
+        nthreads = omp_get_num_threads();
     }  /* All threads join master thread and disband */
     printf("this is not in parallel region\n");
 }
