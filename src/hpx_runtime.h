@@ -84,8 +84,9 @@ class loop_data {
     public:
         loop_data(int NT, int L, int U, int S, int C, int sched) 
             : lower(L), upper(U), stride(S), chunk(C), num_threads(NT), 
-              first_iter(NT,0), last_iter(NT,0), iter_count(NT,0), 
-              schedule(sched)
+              schedule(sched), total_iter(0), 
+              first_iter(NT,0), last_iter(NT,0), iter_count(NT,0)
+              
     {
         if( stride == 0) {
             total_iter = (upper - lower) + 1;
@@ -179,7 +180,7 @@ class omp_task_data {
 
         //This is for explicit tasks
         omp_task_data(int tid, parallel_region *T, omp_icv icv_vars)
-            : local_thread_num(tid), team(T), icv(icv_vars), num_child_tasks(new atomic<int64_t>{0})
+            : local_thread_num(tid), team(T), num_child_tasks(new atomic<int64_t>{0}), icv(icv_vars)
         {
             threads_requested = icv.nthreads;
             icv_vars.device = icv.device;

@@ -7,8 +7,6 @@ PROJECT(HPXMP CXX ASM)
 
 cmake_minimum_required(VERSION 2.8)
 
-SET(CMAKE_ASM_FLAGS "${CFLAGS} -x assembler-with-cpp")
-
 set(hpxmp_sources
     asm_functions.s
     intel_hpxMP.cpp
@@ -29,6 +27,8 @@ if(NOT HPX_WITH_HPXMP)
         message(FATAL "HPX_DIR not set, unable to find HPX!")
     endif()
     message(STATUS "HPX_DIR=${HPX_DIR}")
+
+    SET(CMAKE_ASM_FLAGS "${CFLAGS} -x assembler-with-cpp")
 
     # This adds the HPX cmake configuration directory to the search path.
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
