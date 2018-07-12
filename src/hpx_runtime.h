@@ -82,23 +82,22 @@ typedef struct kmp_depend_info {
 
 class loop_data {
     public:
-        loop_data(int NT, int L, int U, int S, int C, int sched) 
-            : lower(L), upper(U), stride(S), chunk(C), num_threads(NT), 
-              schedule(sched), total_iter(0), 
+        loop_data(int NT, int L, int U, int S, int C, int sched)
+            : lower(L), upper(U), stride(S), chunk(C), num_threads(NT),
+              schedule(sched), total_iter(0),
               first_iter(NT,0), last_iter(NT,0), iter_count(NT,0)
-              
-    {
-        if( stride == 0) {
-            total_iter = (upper - lower) + 1;
-        } else if( stride > 0) {
-            total_iter = (upper - lower) / stride + 1;
-        } else {
-            total_iter = (lower - upper) / -stride + 1;
+        {
+            if( stride == 0) {
+                total_iter = (upper - lower) + 1;
+            } else if( stride > 0) {
+                total_iter = (upper - lower) / stride + 1;
+            } else {
+                total_iter = (lower - upper) / -stride + 1;
+            }
         }
-    }
-        loop_data(const loop_data &other) 
-            : loop_data( other.num_threads, other.lower, other.upper, 
-                         other.stride, other.chunk, other.schedule ) 
+        loop_data(const loop_data &other)
+            : loop_data( other.num_threads, other.lower, other.upper,
+                         other.stride, other.chunk, other.schedule )
         { }
 
         loop_data operator=(const loop_data &other) {
@@ -125,20 +124,20 @@ class loop_data {
 //template<typename scheduler>
 struct parallel_region {
 
-    parallel_region( int N ) : num_threads(N), globalBarrier(N), 
+    parallel_region( int N ) : num_threads(N), globalBarrier(N),
                                depth(0), reduce_data(N)
     {};
 
     parallel_region( parallel_region *parent, int threads_requested ) : parallel_region(threads_requested)
     {
-        depth = parent->depth + 1; 
+        depth = parent->depth + 1;
     }
     int num_threads;
     //hpx::lcos::local::condition_variable_any cond;
     barrier globalBarrier;
     mutex_type crit_mtx{};
     mutex_type thread_mtx{};
-    mutex_type single_mtx{}; 
+    mutex_type single_mtx{};
     int depth;
     atomic<int64_t> num_tasks{0};
     atomic<int> single_counter{0};
@@ -159,7 +158,7 @@ struct parallel_region {
 class omp_task_data {
     public:
         //This constructor should only be used once for the implicit task
-        omp_task_data( parallel_region *T, omp_device_icv *global, int init_num_threads) 
+        omp_task_data( parallel_region *T, omp_device_icv *global, int init_num_threads)
             : team(T), num_child_tasks(new atomic<int64_t>{0})
               {
             local_thread_num = 0;
@@ -200,7 +199,7 @@ class omp_task_data {
                 threads_requested = 1;
             }
         }
-        
+
         int local_thread_num;
         //int global_thread_num;
         int threads_requested;
@@ -242,12 +241,12 @@ class hpx_runtime {
         void create_task( omp_task_func taskfunc, void *frame_pointer,
                           void *firstprivates, int is_tied, int blocks_parent);
         void create_task( kmp_routine_entry_t taskfunc, int gtid, kmp_task_t *task);
-        void create_df_task( int gtid, kmp_task_t *thunk, 
+        void create_df_task( int gtid, kmp_task_t *thunk,
                              int ndeps, kmp_depend_info_t *dep_list,
                              int ndeps_noalias, kmp_depend_info_t *noalias_dep_list );
 
 #ifdef FUTURIZE_TASKS
-        void create_future_task( int gtid, kmp_task_t *thunk, 
+        void create_future_task( int gtid, kmp_task_t *thunk,
                                  int ndeps, kmp_depend_info_t *dep_list);
 #endif
         void task_exit();
