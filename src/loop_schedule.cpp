@@ -26,11 +26,11 @@ void omp_static_init( int gtid, int schedtype, int *p_last_iter,
         block_size = (trip_count / team_size + adjustment) * incr;
         my_lower = *p_lower + gtid * stride;
         my_upper = my_lower + block_size;
-        if( my_upper > *p_upper ) {
+        if( static_cast<T>(my_upper) > *p_upper ) {
             my_upper = *p_upper;
         }
     } else { //kmp_sch_static_chunked
-        int last_lower = *p_lower + trip_count - (trip_count)%chunk;
+        //int last_lower = *p_lower + trip_count - (trip_count)%chunk;
 
         my_lower = *p_lower + gtid * incr * chunk;
         my_upper = my_lower + incr * chunk - 1;
@@ -103,7 +103,7 @@ void scheduler_init( int gtid, int schedtype, T lower, T upper, D stride, D chun
     //Is there ever a case where num_threads would be different than the number of threads in a current team?
     int NT = team->num_threads;
     team->loop_mtx.lock(); //making every thread wait here, until the struct is created.
-    if(team->loop_list.size() == task->loop_num) {//first to loop
+    if(team->loop_list.size() == static_cast<std::size_t>(task->loop_num)) {//first to loop
         if( kmp_ord_lower & schedtype ) {
             schedtype -= (kmp_ord_lower - kmp_sch_lower);
         }
@@ -157,7 +157,7 @@ int kmp_next( int gtid, int *p_last, T *p_lower, T *p_upper, D *p_stride ) {
     int current_loop = hpx_backend->get_task_data()->loop_num - 1;
     auto loop_sched = &(hpx_backend->get_team()->loop_list[current_loop]);
     int schedule = loop_sched->schedule;
-    auto team = hpx_backend->get_team();
+    //auto team = hpx_backend->get_team();
     T init;
     int loop_id;
 
@@ -204,13 +204,13 @@ int kmp_next( int gtid, int *p_last, T *p_lower, T *p_upper, D *p_stride ) {
             //FIXME: this logic is wrong
             *p_upper  = *p_lower + (*p_stride) * ( loop_sched->chunk - 1 );
 
-            if(p_last && *p_upper == loop_sched->upper) {
+            if(p_last && *p_upper == static_cast<T>(loop_sched->upper)) {
                 *p_last = 1;
             }
-            if(*p_upper > loop_sched->upper) {
+            if(*p_upper > static_cast<T>(loop_sched->upper)) {
                 *p_upper = loop_sched->upper;//not sure this is 100% correct
             }
-            if(*p_lower > loop_sched->upper) {
+            if(*p_lower >  static_cast<T>(loop_sched->upper)) {
                 return 0;
             }
             return 1;
@@ -233,10 +233,10 @@ int kmp_next( int gtid, int *p_last, T *p_lower, T *p_upper, D *p_stride ) {
             loop_sched->last_iter[gtid] = loop_sched->first_iter[gtid] + loop_sched->chunk;
             *p_last = 0;
 
-            if(*p_lower > loop_sched->upper ) {
+            if(*p_lower >  static_cast<T>(loop_sched->upper)) {
                 return 0;
             }
-            if(*p_upper > loop_sched->upper) {
+            if(*p_upper >  static_cast<T>(loop_sched->upper)) {
                 *p_upper = loop_sched->upper;
                 *p_last = 1;
             }
