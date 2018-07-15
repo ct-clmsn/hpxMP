@@ -16,7 +16,7 @@ Installation
 requires HPX, which can be found at https://github.com/STEllAR-GROUP/hpx
 
 In addition to the other cmake options, HPX must be built with the following option:
- -DHPX_THREAD_MAINTAIN_LOCAL_STORAGE=ON 
+ `-DHPX_HAVE_THREAD_LOCAL_STORAGE=ON` 
 
 omp/tests contains simple openMP programs and the Makefile to build them.
 currently, multiple runtimes and compilers have been added to the tests with the following targets:
