@@ -33,7 +33,7 @@ set(HPX_RPATH  "${HPX_RPATH}:${CMAKE_INSTALL_PREFIX}/lib/hpx:${CMAKE_BINARY_DIR}
 add_hpx_library(hpxmp SOURCES src/asm_functions.s src/intel_hpxMP.cpp src/hpx_runtime.cpp src/kmp_atomic.cpp src/loop_schedule.cpp src/ompt_hpx-general.cpp HEADERS src/intel_hpxMP.h src/hpx_runtime.h src/kmp_atomic.h src/loop_schedule.h src/ompt.h src/ompt-event-specific.h src/ompt-internal.h)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -fopenmp")
-link_directories(${OPENMP_DIR})
-include_directories(${OPENMP_DIR})
+#link_directories(${OPENMP_DIR})
+#include_directories(${OPENMP_DIR})
 add_executable(hello_world tests/omp/ompt/hello_world.c)
-target_link_libraries(hello_world -L${OPENMP_DIR})
+#target_link_libraries(hello_world -L${OPENMP_DIR})

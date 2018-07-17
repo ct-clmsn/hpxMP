@@ -48,7 +48,7 @@ static ompt_get_unique_id_t ompt_get_unique_id;
 static void
 on_ompt_callback_parallel_begin(
         ompt_data_t *encountering_task_data,
-        const omp_frame_t *encountering_task_frame,
+        const ompt_frame_t *encountering_task_frame,
         ompt_data_t* parallel_data,
         uint32_t requested_team_size,
         ompt_invoker_t invoker,
@@ -73,7 +73,7 @@ on_ompt_callback_parallel_end(
 static void
 on_ompt_callback_task_create(
         ompt_data_t *encountering_task_data,
-        const omp_frame_t *encountering_task_frame,
+        const ompt_frame_t *encountering_task_frame,
         ompt_data_t* new_task_data,
         int type,
         int has_dependences,
