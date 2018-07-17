@@ -57,7 +57,7 @@ on_ompt_callback_parallel_begin(
     if(parallel_data->ptr)
         printf("0: parallel_data initially not null\n");
     parallel_data->value = ompt_get_unique_id();
-    printf("%" PRIu64 ": ompt_event_parallel_begin: parent_task_id=%" PRIu64 ", parallel_id=%" PRIu64 ", requested_team_size=%" PRIu32 "\n", ompt_get_thread_data()->value, encountering_task_data->value, parallel_data->value, requested_team_size);
+    printf("%" PRIu64 ": ompt_event_parallel_begin: parent_task_id=%" PRIu64 ", parallel_id=%" PRIu64 ", requested_team_size=%" PRIu32 ",codeptr_ra=%p\n", ompt_get_thread_data()->value, encountering_task_data->value, parallel_data->value, requested_team_size,codeptr_ra);
 }
 
 static void
