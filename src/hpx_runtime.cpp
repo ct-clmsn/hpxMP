@@ -547,7 +547,7 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
     //  of an OpenMP barrier.
     if(--running_threads == 0) {
         //hpx::lcos::local::spinlock::scoped_lock lk(barrier_mtx);
-        std::unique_lock<mutex_type> lk(barrier_mtx);
+        //std::unique_lock<mutex_type> lk(barrier_mtx);
         cond.notify_all();
     }
 }
