@@ -242,11 +242,7 @@ OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
 OMPT_API_ROUTINE int ompt_get_parallel_info(int ancestor_level,
                                             ompt_data_t **parallel_data,
                                             int *team_size) {
-    omp_task_data *omp_task= hpx_backend->get_task_data();
-    *parallel_data = &omp_task->parallel_info.parallel_data;
-    return 0;
-    //return __ompt_get_parallel_info_internal(ancestor_level, parallel_data,
-                                             //team_size);
+    return __ompt_get_parallel_info_internal(ancestor_level,parallel_data,team_size);
 }
 
 /*****************************************************************************
@@ -326,4 +322,14 @@ int __ompt_get_task_info_internal(int ancestor_level, int *type,
     uint64_t id= hpx_backend->get_thread_num();
     *task_data = &ompt_data[id].task_data;
     return 0;
+}
+
+int __ompt_get_parallel_info_internal(int ancestor_level,
+                                      ompt_data_t **parallel_data,
+                                      int *team_size){
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    *parallel_data = &omp_task->parallel_info.parallel_data;
+    return 0;
+    //return __ompt_get_parallel_info_internal(ancestor_level, parallel_data,
+    //team_size);
 }

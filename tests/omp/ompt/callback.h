@@ -118,6 +118,28 @@ on_ompt_callback_thread_end(
     printf("%" PRIu64 ": ompt_event_thread_end: thread_id=%" PRIu64 "\n", ompt_get_thread_data()->value, thread_data->value);
 }
 
+static void
+on_ompt_callback_implicit_task(
+        ompt_scope_endpoint_t endpoint,
+        ompt_data_t *parallel_data,
+        ompt_data_t *task_data,
+        unsigned int team_size,
+        unsigned int thread_num)
+{
+    switch(endpoint)
+    {
+        case ompt_scope_begin:
+            if(task_data->ptr)
+                printf("%s\n", "0: task_data initially not null");
+            task_data->value = ompt_get_unique_id();
+            printf("%" PRIu64 ": ompt_event_implicit_task_begin: parallel_id=%" PRIu64 ", task_id=%" PRIu64 ", team_size=%" PRIu32 ", thread_num=%" PRIu32 "\n", ompt_get_thread_data()->value, parallel_data->value, task_data->value, team_size, thread_num);
+            break;
+        case ompt_scope_end:
+            printf("%" PRIu64 ": ompt_event_implicit_task_end: parallel_id=%" PRIu64 ", task_id=%" PRIu64 ", team_size=%" PRIu32 ", thread_num=%" PRIu32 "\n", ompt_get_thread_data()->value, (parallel_data)?parallel_data->value:0, task_data->value, team_size, thread_num);
+            break;
+    }
+}
+
 #define register_callback_t(name, type)                       \
               do{                                                           \
                 type f_##name = &on_##name;                                 \
@@ -144,6 +166,7 @@ int ompt_initialize(
     ompt_callback_thread_begin_t fy_ompt_callback_thread_begin = &on_ompt_callback_thread_begin;
     ompt_set_callback(ompt_callback_thread_begin, (ompt_callback_t)fy_ompt_callback_thread_begin);
     register_callback(ompt_callback_thread_end);
+    register_callback(ompt_callback_implicit_task);
     printf("0: NULL_POINTER=%p\n", (void*)NULL);
     return 1; //success
 }

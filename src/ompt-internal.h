@@ -146,3 +146,7 @@ int __ompt_get_task_info_internal(int ancestor_level, int *type,
                                   ompt_data_t **task_data,
                                   omp_frame_t **task_frame,
                                   ompt_data_t **parallel_data, int *thread_num);
+
+int __ompt_get_parallel_info_internal(int ancestor_level,
+                                      ompt_data_t **parallel_data,
+                                      int *team_size);
