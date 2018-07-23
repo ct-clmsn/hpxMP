@@ -8,17 +8,17 @@ PROJECT(HPXMP CXX ASM)
 cmake_minimum_required(VERSION 2.8)
 
 set(hpxmp_sources
-    asm_functions.s
-    intel_hpxMP.cpp
-    hpx_runtime.cpp
-    kmp_atomic.cpp
-    loop_schedule.cpp)
+        src/asm_functions.s
+        src/intel_hpxMP.cpp
+        src/hpx_runtime.cpp
+        src/kmp_atomic.cpp
+        src/loop_schedule.cpp)
 
 set(hpxmp_headers
-    intel_hpxMP.h
-    hpx_runtime.h
-    kmp_atomic.h
-    loop_schedule.h)
+        src/intel_hpxMP.h
+        src/hpx_runtime.h
+        src/kmp_atomic.h
+        src/loop_schedule.h)
 
 # Find and include HPX settings
 if(NOT HPX_WITH_HPXMP)
