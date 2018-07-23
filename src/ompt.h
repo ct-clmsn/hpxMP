@@ -28,28 +28,7 @@
  *****************************************************************************/
 
 #define FOREACH_OMPT_INQUIRY_FN(macro)      \
-    macro (ompt_enumerate_states)           \
-    macro (ompt_enumerate_mutex_impls)      \
-                                            \
-    macro (ompt_set_callback)               \
-    macro (ompt_get_callback)               \
-                                            \
-    macro (ompt_get_state)                  \
-                                            \
-    macro (ompt_get_parallel_info)          \
-    macro (ompt_get_task_info)              \
-    macro (ompt_get_thread_data)            \
-    macro (ompt_get_unique_id)              \
-                                            \
-    macro(ompt_get_num_procs)               \
-    macro(ompt_get_num_places)              \
-    macro(ompt_get_place_proc_ids)          \
-    macro(ompt_get_place_num)               \
-    macro(ompt_get_partition_place_nums)    \
-    macro(ompt_get_proc_id)                 \
-                                            \
-    macro(ompt_get_target_info)             \
-    macro(ompt_get_num_devices)
+    macro(ompt_set_callback)
 
 #define FOREACH_OMP_STATE(macro)                                                                \
                                                                                                 \
