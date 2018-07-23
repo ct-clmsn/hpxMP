@@ -644,6 +644,18 @@ void fork_and_sync( invoke_func kmp_invoke, microtask_t thread_func,
 void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc, void** argv)
 {
     omp_task_data *current_task = get_task_data();
+#if OMPT_SUPPORT
+    //TODO:HOW TO FIND OUT INVOKER
+    ompt_invoker_t a = ompt_invoker_runtime;
+    if (ompt_enabled.enabled) {
+        if (ompt_enabled.ompt_callback_parallel_begin) {
+            int team_size = current_task->icv.nthreads;
+            ompt_callbacks.ompt_callback(ompt_callback_parallel_begin)(
+                    NULL, NULL,__ompt_get_parallel_data_internal(), team_size,
+                    a,__builtin_return_address(0));
+        }
+    }
+#endif
     if( hpx::threads::get_self_ptr() ) {
         fork_worker(kmp_invoke, thread_func, argc, argv, current_task);
     } else {
@@ -662,5 +674,12 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
         }
     }
     current_task->set_threads_requested(current_task->icv.nthreads );
+#if OMPT_SUPPORT
+        if (ompt_enabled.ompt_callback_parallel_end) {
+            ompt_callbacks.ompt_callback(ompt_callback_parallel_end)(
+                    __ompt_get_parallel_data_internal(),NULL,a,
+                    __builtin_return_address(0));
+        }
+#endif
 }
 

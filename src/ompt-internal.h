@@ -134,3 +134,4 @@ extern ompt_callbacks_active_t ompt_enabled;
 typedef omp_task_data ompt_thread_t;
 extern boost::shared_ptr<hpx_runtime> hpx_backend;
 ompt_data_t *__ompt_get_thread_data_internal();
+ompt_data_t *__ompt_get_parallel_data_internal();

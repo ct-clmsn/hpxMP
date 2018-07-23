@@ -236,3 +236,8 @@ ompt_data_t *__ompt_get_thread_data_internal() {
     omp_task_data *omp_task= hpx_backend->get_task_data();
     return &omp_task->thread_data;
 }
+
+ompt_data_t *__ompt_get_parallel_data_internal() {
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    return &omp_task->parallel_data;
+}

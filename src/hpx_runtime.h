@@ -213,6 +213,7 @@ class omp_task_data {
         int loop_num{0};
         bool in_taskgroup{false};
         ompt_data_t thread_data=ompt_data_none;
+        ompt_data_t parallel_data = ompt_data_none;
         //shared_future<void> last_df_task;
 
 #ifdef OMP_COMPLIANT
