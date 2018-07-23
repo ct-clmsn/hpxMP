@@ -12,13 +12,17 @@ set(hpxmp_sources
         src/intel_hpxMP.cpp
         src/hpx_runtime.cpp
         src/kmp_atomic.cpp
-        src/loop_schedule.cpp)
+        src/loop_schedule.cpp
+        src/ompt_hpx-general.cpp)
 
 set(hpxmp_headers
         src/intel_hpxMP.h
         src/hpx_runtime.h
         src/kmp_atomic.h
-        src/loop_schedule.h)
+        src/loop_schedule.h
+        src/ompt.h
+        src/ompt-event-specific.h
+        src/ompt-internal.h)
 
 # Find and include HPX settings
 if(NOT HPX_WITH_HPXMP)
