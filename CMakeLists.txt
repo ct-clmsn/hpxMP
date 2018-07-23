@@ -66,4 +66,6 @@ else()
 
 endif()
 
-
+#temp
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -fopenmp")
+add_executable(hello_world /home/tianyi/pkgs/repo/hpxMP_07/tests/omp/ompt/hello_world.c)

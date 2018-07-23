@@ -3,6 +3,7 @@
 //
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+#pragma once
 
 #include <limits>
 #include <thread>
@@ -32,6 +33,7 @@
 #include <map>
 
 #include "icv-vars.h"
+#include "ompt.h"
 
 
 using std::atomic;
@@ -210,6 +212,7 @@ class omp_task_data {
         int single_counter{0};
         int loop_num{0};
         bool in_taskgroup{false};
+        ompt_data_t thread_data=ompt_data_none;
         //shared_future<void> last_df_task;
 
 #ifdef OMP_COMPLIANT

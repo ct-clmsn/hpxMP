@@ -178,6 +178,11 @@ void ompt_post_init() {
             memset(&ompt_enabled, 0, sizeof(ompt_enabled));
             return;
         }
+
+        if (ompt_enabled.ompt_callback_thread_begin) {
+            ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
+                    ompt_thread_initial, __ompt_get_thread_data_internal());
+        }
     }
 }
 
@@ -222,4 +227,12 @@ static ompt_interface_fn_t ompt_fn_lookup(const char *s) {
     FOREACH_OMPT_INQUIRY_FN(ompt_interface_fn)
 
     return (ompt_interface_fn_t)0;
+}
+
+/*****************************************************************************
+ * From ompt-specific.cpp
+ ****************************************************************************/
+ompt_data_t *__ompt_get_thread_data_internal() {
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    return &omp_task->thread_data;
 }
