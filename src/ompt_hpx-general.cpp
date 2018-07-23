@@ -214,6 +214,24 @@ OMPT_API_ROUTINE int ompt_set_callback(ompt_callbacks_t which,
 }
 
 /*****************************************************************************
+ * misc
+ ****************************************************************************/
+#define KMP_TEST_THEN_INC64(p)                                                 \
+  __sync_fetch_and_add((volatile long long *)(p), 1LL)
+
+OMPT_API_ROUTINE uint64_t ompt_get_unique_id(void) {
+    static uint64_t thread=1;
+    static __thread uint64_t ID=0;
+    if(ID==0) {
+        if (hpx_backend){
+            uint64_t new_thread = KMP_TEST_THEN_INC64((long long *)&thread);
+            ID = new_thread << (sizeof(uint64_t) * 8 - 16);
+        }
+    }
+    return ++ID;
+}
+
+/*****************************************************************************
  * API inquiry for tool
  ****************************************************************************/
 
