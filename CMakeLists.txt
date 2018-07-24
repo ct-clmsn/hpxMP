@@ -24,6 +24,10 @@ set(hpxmp_headers
         src/ompt-event-specific.h
         src/ompt-internal.h)
 
+if(HPXMP_WITH_OMPT)
+    add_definitions(-DHPXMP_HAVE_OMPT=1)
+endif()
+
 # Find and include HPX settings
 if(NOT HPX_WITH_HPXMP)
 

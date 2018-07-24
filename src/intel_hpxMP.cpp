@@ -269,11 +269,11 @@ int __kmpc_global_thread_num(ident_t *loc){
     #ifdef DEBUG
         std::cout<<"__kmpc_global_thread_num"<<std::endl;
     #endif
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
         ompt_pre_init();
 #endif
     start_backend();
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
     ompt_post_init();
 #endif
     if(hpx_backend)

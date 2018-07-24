@@ -41,7 +41,7 @@ void fini_runtime()
 {
     cout << "Stopping HPX OpenMP runtime" << endl;
     //this should only be done if this runtime started hpx
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
     if (ompt_enabled.ompt_callback_thread_end) {
         ompt_callbacks.ompt_callback(ompt_callback_thread_end)(
                 __ompt_get_thread_data_internal());
@@ -531,7 +531,7 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
     if(argc == 0) { //note: kmp_invoke segfaults iff argc == 0
         thread_func(&tid, &tid);
     } else {
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
         if (ompt_enabled.enabled) {
             if (ompt_enabled.ompt_callback_thread_begin) {
                 ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
@@ -565,7 +565,7 @@ void thread_setup( invoke_func kmp_invoke, microtask_t thread_func,
         //std::unique_lock<mutex_type> lk(barrier_mtx);
         cond.notify_all();
     }
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
     if (ompt_enabled.ompt_callback_thread_end) {
         ompt_callbacks.ompt_callback(ompt_callback_thread_end)(__ompt_get_thread_data_internal());
     }
@@ -644,7 +644,7 @@ void fork_and_sync( invoke_func kmp_invoke, microtask_t thread_func,
 void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc, void** argv)
 {
     omp_task_data *current_task = get_task_data();
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
     //TODO:HOW TO FIND OUT INVOKER
     ompt_invoker_t a = ompt_invoker_runtime;
     if (ompt_enabled.enabled) {
@@ -674,7 +674,7 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
         }
     }
     current_task->set_threads_requested(current_task->icv.nthreads );
-#if OMPT_SUPPORT
+#if HPXMP_HAVE_OMPT
         if (ompt_enabled.ompt_callback_parallel_end) {
             ompt_callbacks.ompt_callback(ompt_callback_parallel_end)(
                     __ompt_get_parallel_data_internal(),NULL,a,
