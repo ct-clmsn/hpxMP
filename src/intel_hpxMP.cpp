@@ -109,6 +109,21 @@ int __kmpc_omp_task( ident_t *loc_ref, kmp_int32 gtid, kmp_task_t * new_task){
         std::cout<<"__kmpc_omp_task"<<std::endl;
     #endif
     start_backend();
+#if HPXMP_HAVE_OMPT
+    //increase the number of task in omp_task_data to make the array work
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    omp_task->num_task++;
+    //initialize task data
+    omp_task->task_data.push_back(ompt_data_none);
+
+    ompt_data_t *task_data;
+    __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
+    if (ompt_enabled.ompt_callback_task_create) {
+        ompt_callbacks.ompt_callback(ompt_callback_task_create)(
+                NULL, NULL,task_data,
+                ompt_task_explicit, 0, __builtin_return_address(0));
+    }
+#endif
     hpx_backend->create_task(new_task->routine, gtid, new_task);
     return 1;
 }
@@ -149,6 +164,21 @@ int __kmpc_omp_task_parts( ident_t *loc_ref, int gtid, kmp_task_t * new_task) {
         std::cout<<"__kmpc_omp_task_parts"<<std::endl;
     #endif
     start_backend();
+#if HPXMP_HAVE_OMPT
+    //increase the number of task in omp_task_data to make the array work
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    omp_task->num_task++;
+    //initialize task data
+    omp_task->task_data.push_back(ompt_data_none);
+
+    ompt_data_t *task_data;
+    __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
+    if (ompt_enabled.ompt_callback_task_create) {
+        ompt_callbacks.ompt_callback(ompt_callback_task_create)(
+                NULL, NULL,task_data,
+                ompt_task_explicit, 0, __builtin_return_address(0));
+    }
+#endif
     hpx_backend->create_task(new_task->routine, gtid, new_task);
     return 0;
 }

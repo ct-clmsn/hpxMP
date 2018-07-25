@@ -183,6 +183,19 @@ void ompt_post_init() {
             ompt_callbacks.ompt_callback(ompt_callback_thread_begin)(
                     ompt_thread_initial, __ompt_get_thread_data_internal());
         }
+
+        //increase the number of task in omp_task_data to make the array work
+        omp_task_data *omp_task= hpx_backend->get_task_data();
+        omp_task->num_task++;
+        //initialize task data
+        omp_task->task_data.push_back(ompt_data_none);
+
+        ompt_data_t *task_data;
+        __ompt_get_task_info_internal(0, NULL, &task_data, NULL, NULL, NULL);
+        if (ompt_enabled.ompt_callback_task_create) {
+            ompt_callbacks.ompt_callback(ompt_callback_task_create)(
+                    NULL, NULL, task_data, ompt_task_initial, 0, NULL);
+        }
     }
 }
 
@@ -258,4 +271,15 @@ ompt_data_t *__ompt_get_thread_data_internal() {
 ompt_data_t *__ompt_get_parallel_data_internal() {
     omp_task_data *omp_task= hpx_backend->get_task_data();
     return &omp_task->parallel_data;
+}
+
+int __ompt_get_task_info_internal(int ancestor_level, int *type,
+                                  ompt_data_t **task_data,
+                                  omp_frame_t **task_frame,
+                                  ompt_data_t **parallel_data,
+                                  int *thread_num) {
+    omp_task_data *omp_task= hpx_backend->get_task_data();
+    int task_num = omp_task->num_task;
+    *task_data = &omp_task->task_data[task_num];
+    return 0;
 }

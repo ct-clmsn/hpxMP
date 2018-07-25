@@ -135,3 +135,8 @@ typedef omp_task_data ompt_thread_t;
 extern boost::shared_ptr<hpx_runtime> hpx_backend;
 ompt_data_t *__ompt_get_thread_data_internal();
 ompt_data_t *__ompt_get_parallel_data_internal();
+int __ompt_get_task_info_internal(int ancestor_level, int *type,
+                                  ompt_data_t **task_data,
+                                  omp_frame_t **task_frame,
+                                  ompt_data_t **parallel_data,
+                                  int *thread_num);

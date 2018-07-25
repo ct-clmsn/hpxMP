@@ -649,7 +649,7 @@ void hpx_runtime::fork(invoke_func kmp_invoke, microtask_t thread_func, int argc
     ompt_invoker_t a = ompt_invoker_runtime;
     if (ompt_enabled.enabled) {
         if (ompt_enabled.ompt_callback_parallel_begin) {
-            int team_size = current_task->icv.nthreads;
+            int team_size = current_task->threads_requested;
             ompt_callbacks.ompt_callback(ompt_callback_parallel_begin)(
                     NULL, NULL,__ompt_get_parallel_data_internal(), team_size,
                     a,__builtin_return_address(0));

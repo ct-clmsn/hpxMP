@@ -215,6 +215,10 @@ class omp_task_data {
 #if(HPXMP_HAVE_OMPT)
         ompt_data_t thread_data=ompt_data_none;
         ompt_data_t parallel_data = ompt_data_none;
+        //increase to 0 first
+        int num_task{-1};
+        //initialized outside : __kmpc_omp_task, ompt_post_init
+        vector<ompt_data_t> task_data;
 #endif
         //shared_future<void> last_df_task;
 
