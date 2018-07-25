@@ -1,3 +1,4 @@
+#include "ompt-internal.h"
 #include "intel_hpxMP.h"
 #include <boost/shared_ptr.hpp>
 #include <iostream>
@@ -268,7 +269,13 @@ int __kmpc_global_thread_num(ident_t *loc){
     #if defined DEBUG && defined HPXMP_HAVE_TRACE
         std::cout<<"__kmpc_global_thread_num"<<std::endl;
     #endif
+#if HPXMP_HAVE_OMPT
+        ompt_pre_init();
+#endif
     start_backend();
+#if HPXMP_HAVE_OMPT
+    ompt_post_init();
+#endif
     if(hpx_backend)
         return hpx_backend->get_thread_num();
     return 0;
