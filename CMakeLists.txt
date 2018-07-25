@@ -20,10 +20,10 @@ set(hpxmp_headers
         src/kmp_atomic.h
         src/loop_schedule.h)
 
-set(HPXMP_WITH_TRACE ON CACHE BOOL "display traces in debug mode")
+set(HPXMP_WITH_TRACE OFF CACHE BOOL "display traces in debug mode")
 
 if(HPXMP_WITH_TRACE)
-    add_definitions(-DHPXMP_HAVE_TRACE=ON)
+    add_definitions(-DHPXMP_HAVE_TRACE)
 endif()
 
 # Find and include HPX settings
