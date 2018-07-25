@@ -20,6 +20,18 @@ set(hpxmp_headers
         src/kmp_atomic.h
         src/loop_schedule.h)
 
+set(HPXMP_WITH_OMPT OFF CACHE BOOL "ompt support for hpxmp")
+if(HPXMP_WITH_OMPT)
+    add_definitions(-DHPXMP_HAVE_OMPT=1)
+    set(hpxmp_sources
+            ${hpxmp_sources}
+            src/ompt_hpx-general.cpp)
+    set(hpxmp_headers ${hpxmp_headers}
+            src/ompt.h
+            src/ompt-event-specific.h
+            src/ompt-internal.h)
+endif()
+
 # Find and include HPX settings
 if(NOT HPX_WITH_HPXMP)
 
@@ -62,4 +74,4 @@ else()
 
 endif()
 
-
+add_subdirectory(examples/ompt)
