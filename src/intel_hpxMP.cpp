@@ -123,6 +123,15 @@ int __kmpc_omp_task( ident_t *loc_ref, kmp_int32 gtid, kmp_task_t * new_task){
                 NULL, NULL,task_data,
                 ompt_task_explicit, 0, __builtin_return_address(0));
     }
+
+    ompt_task_status_t status = ompt_task_others;
+    /* let OMPT know that we're about to run this task */
+            //TODO: first_task is not correctly implemented
+    if (ompt_enabled.ompt_callback_task_schedule) {
+        ompt_callbacks.ompt_callback(ompt_callback_task_schedule)(
+                task_data, status,
+                task_data);
+    }
 #endif
     hpx_backend->create_task(new_task->routine, gtid, new_task);
     return 1;
